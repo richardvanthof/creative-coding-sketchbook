@@ -1,3 +1,3 @@
 # Creative coding studies
 ## Get started
-- Open `index.html`
+a. Open `index.html`
