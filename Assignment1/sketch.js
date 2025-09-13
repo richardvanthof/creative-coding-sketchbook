@@ -1,76 +1,160 @@
-
-// 5. Interactive Truchet Tiles
-// Based on https://www.youtube.com/watch?v=Vpx2OeFc26o
-let rows = 20, cols = 20;
-let tiles = [];
-
-class Tile {
-  constructor(x,y, size) {
-    this.x = x;
-    this.y = y;
-    this.angle = 0;
-    this.size = size;
-    this.type = floor(random(0,2));
-  }
-
-  show() {
-    rectMode(CENTER);
-    push();
-      strokeWeight(.3)
-      translate(this.x,this.y);
-      stroke(0)
-      const offsetX = width / cols / 2;
-      const offsetY = height / rows / 2;
-      rotate(this.angle);
-      noStroke();
-      rect(0,0,this.size,this.size);
-      stroke(3)
-      if(this.type === 0) {
-        arc(-this.size/2,-this.size/2,this.size, this.size, 0, PI/2)
-        arc(this.size/2,this.size/2,this.size, this.size, PI, 3*PI/2)
-      } else {
-        arc(-this.size/2,this.size/2,this.size, this.size, TWO_PI*0.75, TWO_PI)
-        arc(this.size/2,-this.size/2,this.size, this.size, PI/2, PI)
-      }
-    pop();
-  }
-
-  update() {
-    //this.angle += 0.01;
-  }
-
-  detectCursor(x,y) {
-    if(x > this.x - this.size/2 && x < this.x + this.size/2 &&
-       y > this.y - this.size/2 && y < this.y + this.size/2) {
-         this.angle += PI/2;
-       }  
-  }
-
-}
+// hexagon grid
+let scale;
 
 function setup() {
   createCanvas(400, 400);
-  // angleMode(DEGREES);
-  const amount = 20; //Amount of tiles
-  const size = width / amount;
-  for(let x = size/2; x < width; x += size) {
-    for(let y = size/2; y < height; y += size) {
-      tiles.push(new Tile(x,y, size));
-    }
-  }
-  //console.log(type)
-  //noLoop();
+  scale = createSlider(10, 50, 30, 1);
 }
 
 function draw() {
-  // background(0);
-  tiles.forEach(tile => {
-    tile.update();
-    tile.detectCursor(mouseX, mouseY)
-    tile.show();
-  })
-  
+  const sx = width/scale.value(); // Width of each cell
+  const sy = height/scale.value(); // height of each cell
+  let col = 0; 
+  for(let x = 0; x <= width; x += sx*.75) {
+    // register current column to see if it's even or odd
+    for(
+      let y = col % 2 === 0 ? sy / 2 : 0; 
+      y <= height; 
+      y += sy
+    ) {
+      console.log(col);
+      fill('green')
+      push();
+        translate(x,y);
+        beginShape();
+          vertex(-sx/4, -sy/2);
+          vertex(sx/4, -sy/2);
+          vertex(sx/2, 0);
+          vertex(sx/4, sy/2);
+          vertex(-sx/4, sy/2);
+          vertex(-sx/2, 0);
+        endShape(CLOSE);
+      pop();
+      
+    }
+    col++;
+  }
+};
+
+/** 
+// failed hexagonal grid (looks cool though :)
+const resX = 20, resY = resX;
+
+function setup() {
+  createCanvas(400, 400);
+  noLoop();
 }
+
+function draw() {
+  const sx = width/resX; // Width of each cell
+  const sy = height/resY; // height of each cell
+  for(let x = 0; x <= width; x += sx) {
+    for(let y = 0; y <= height; y += sy) {
+      fill('green')
+      beginShape();
+        vertex(x+sx*0,25, y);
+        vertex(x+sx*0.75, y);
+        vertex(x+sx, y+sy*0.5);
+        vertex(x+sx*0.75, y+sy);
+        vertex(x+sx*0,25, y + sy);
+        vertex(x, y+sy*0.5);
+      endShape(CLOSE);
+    }
+  }
+};
+*/
+
+/**
+ // 6. trigangle grid
+ const resX = 20, resY = resX;
+ 
+ function setup() {
+   createCanvas(400, 400);
+   noLoop();
+ }
+ 
+ function draw() {
+   const sx = width/resX; // Width of each cell
+   const sy = height/resY; // height of each cell
+   for(let x = 0; x <= width; x += sx) {
+     for(let y = 0; y <= height; y += sy) {
+       fill('green')
+       triangle(x-sx/2,y+sy, x + sx/2, y+sy, x, y)
+       triangle(x,y, x + sx, y, x + sx/2, y + sy)
+     }
+   }
+ }
+ */
+
+// // 5. Interactive Truchet Tiles
+// // Based on https://www.youtube.com/watch?v=Vpx2OeFc26o
+// class Tile {
+//   constructor(x,y, size) {
+//     this.x = x;
+//     this.y = y;
+//     this.angle = 0;
+//     this.size = size;
+//     this.type = floor(random(0,2));
+//   }
+
+//   show() {
+//     rectMode(CENTER);
+//     push();
+//       strokeWeight(.3)
+//       translate(this.x,this.y);
+//       stroke(0)
+//       const offset = this.size/2;
+//       rotate(this.angle);
+//       noStroke();
+//       rect(0,0,this.size,this.size);
+//       stroke(3)
+//       if(this.type === 0) {
+//         arc(-this.size/2,-this.size/2,this.size, this.size, 0, PI/2)
+//         arc(this.size/2,this.size/2,this.size, this.size, PI, 3*PI/2)
+//       } else {
+//         arc(-this.size/2,this.size/2,this.size, this.size, TWO_PI*0.75, TWO_PI)
+//         arc(this.size/2,-this.size/2,this.size, this.size, PI/2, PI)
+//       }
+//     pop();
+//   }
+
+//   update() {
+//     //this.angle += 0.01;
+//   }
+
+//   detectCursor(x,y) {
+//     if(x > this.x - this.size/2 && x < this.x + this.size/2 &&
+//        y > this.y - this.size/2 && y < this.y + this.size/2) {
+//          this.angle += PI/2;
+//        }  
+//   }
+
+// }
+
+// function setup() {
+//   createCanvas(400, 400);
+//   // angleMode(DEGREES);
+//   const amount = 20; //Amount of tiles
+//   const size = width / amount;
+//   for(let x = size/2; x < width; x += size) {
+//     for(let y = size/2; y < height; y += size) {
+//       tiles.push(new Tile(x,y, size));
+//     }
+//   }
+//   //console.log(type)
+//   //noLoop();
+// }
+
+// function draw() {
+//   // background(0);
+//   tiles.forEach(tile => {
+//     tile.update();
+//     tile.detectCursor(mouseX, mouseY)
+//     tile.show();
+//   })
+  
+// }
+
 /*
 // 3. Weird rotating rectangle glitch thing.
 let rows = 20;

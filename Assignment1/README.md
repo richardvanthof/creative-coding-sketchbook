@@ -4,7 +4,7 @@
 View the result by opening the `index.html` file in your browser.
 
 ## 🏛️ Disclaimer
-Results may be inspired on the code of others. This was done not to copy but to get inspiration for what is possible within the assignment. References to used information can be found in the code's comments.
+Results may be inspired on the code of others. This was done not to copy but to get ideas for what is possible within the assignment. References to used information can be found in the code's comments.
 
 ## 📄 Instructions
 Create a sketch that generates a different grid-based pattern each time it is run by using either the `random()` function or the `noise()` function, e.g., to choose the positions and types of shapes drawn. 
