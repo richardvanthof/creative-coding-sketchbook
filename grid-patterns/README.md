@@ -1,10 +1,8 @@
 # Assignment 1: Grid Patterns
+This is the coding assignment about grids patterns. This deliverable may show multiple experiments. Please only look at the first result for grading if you can't take multiple result into account. References for used inspiration/code examples can be found as comments in the source code.
 
 ## 🚀 How to run
-View the result by opening the `index.html` file in your browser.
-
-## 🏛️ Disclaimer
-Results may be inspired on the code of others. This was done not to copy but to get ideas for what is possible within the assignment. References to used information can be found in the code's comments.
+- View the result by opening the `index.html` file in your browser.
 
 ## 📄 Instructions
 Create a sketch that generates a different grid-based pattern each time it is run by using either the `random()` function or the `noise()` function, e.g., to choose the positions and types of shapes drawn. 

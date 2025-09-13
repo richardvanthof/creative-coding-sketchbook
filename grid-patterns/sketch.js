@@ -1,40 +1,5 @@
 // hexagon grid
-let scale;
 
-function setup() {
-  createCanvas(400, 400);
-  scale = createSlider(10, 50, 30, 1);
-}
-
-function draw() {
-  const sx = width/scale.value(); // Width of each cell
-  const sy = height/scale.value(); // height of each cell
-  let col = 0; 
-  for(let x = 0; x <= width; x += sx*.75) {
-    // register current column to see if it's even or odd
-    for(
-      let y = col % 2 === 0 ? sy / 2 : 0; 
-      y <= height; 
-      y += sy
-    ) {
-      console.log(col);
-      fill('green')
-      push();
-        translate(x,y);
-        beginShape();
-          vertex(-sx/4, -sy/2);
-          vertex(sx/4, -sy/2);
-          vertex(sx/2, 0);
-          vertex(sx/4, sy/2);
-          vertex(-sx/4, sy/2);
-          vertex(-sx/2, 0);
-        endShape(CLOSE);
-      pop();
-      
-    }
-    col++;
-  }
-};
 
 /** 
 // failed hexagonal grid (looks cool though :)
@@ -64,27 +29,7 @@ function draw() {
 };
 */
 
-/**
- // 6. trigangle grid
- const resX = 20, resY = resX;
  
- function setup() {
-   createCanvas(400, 400);
-   noLoop();
- }
- 
- function draw() {
-   const sx = width/resX; // Width of each cell
-   const sy = height/resY; // height of each cell
-   for(let x = 0; x <= width; x += sx) {
-     for(let y = 0; y <= height; y += sy) {
-       fill('green')
-       triangle(x-sx/2,y+sy, x + sx/2, y+sy, x, y)
-       triangle(x,y, x + sx, y, x + sx/2, y + sy)
-     }
-   }
- }
- */
 
 // // 5. Interactive Truchet Tiles
 // // Based on https://www.youtube.com/watch?v=Vpx2OeFc26o
@@ -155,42 +100,7 @@ function draw() {
   
 // }
 
-/*
-// 3. Weird rotating rectangle glitch thing.
-let rows = 20;
-let cols = 20;
-function setup() {
-  createCanvas(400, 400);
-  angleMode(DEGREES);
-  //noLoop();
-}
 
-function draw() {
-  background(0);
-  rectMode(CENTER);
-  strokeWeight(.3)
-  //translate(width / 2, height / 2);
-  //noStroke();
-  const offsetX = width / cols / 2;
-  const offsetY = height / rows / 2;
-  for(let x = offsetX; x < width; x += width / cols) {
-    for(let y = offsetY; y < height; y += height / rows) {
-
-  
-      const r = random(0,1)
-      push();
-        //rectMode(CENTER)
-        translate(x,y)
-        rotate(frameCount)
-        scale(map(noise(frameCount) *100, -1, 1, .9, 1.5))
-        //fill(10, map(x, 0, width, 0, 255), map(y, 0, height, 0, 255))
-        rect(0,0,(width/cols),(height/rows));
-
-      pop();
-    }
-  }
-}
-*/
 // 2. Weird gradient with rotating squares
 
 /** 

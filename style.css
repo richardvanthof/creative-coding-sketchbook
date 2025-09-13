@@ -1,0 +1,27 @@
+html, body {
+  margin: 1em;
+  padding: 0;
+  background: rgb(241, 241, 241);
+  font-family: sans-serif;;
+}
+
+canvas {
+  display: block;
+}
+
+.active {
+  background-color: rgb(174, 217, 231);
+  border: 2px solid rgb(35, 59, 68);
+}
+
+.paginator {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+#sketch-container {
+  margin: 20px;
+}
