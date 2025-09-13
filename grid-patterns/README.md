@@ -1,5 +1,5 @@
 # Assignment 1: Grid Patterns
-This is the coding assignment about grids patterns. This deliverable may show multiple experiments. Please only look at the first result for grading if you can't take multiple result into account. References for used inspiration/code examples can be found as comments in the source code.
+This is the coding assignment about grids patterns. This deliverable may show multiple experiments. Please only look at the first result for grading if you can't take multiple items into account. References for used inspiration/code examples can be found as comments in the source code.
 
 ## 🚀 How to run
 - View the result by opening the `index.html` file in your browser.
