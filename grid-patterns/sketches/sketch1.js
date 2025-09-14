@@ -16,6 +16,7 @@ const sketch1 = (p) => {
 
         for (let x = 0; x <= p.width; x += sx * 0.75) {
             for (
+                // Alternate starting y position for staggered rows.
                 let y = col % 2 === 0 ? sy / 2 : 0;
                 y <= p.height;
                 y += sy
@@ -24,12 +25,12 @@ const sketch1 = (p) => {
                 p.push();
                     p.translate(x, y);
                     p.beginShape();
-                    p.vertex(-sx / 4, -sy / 2);
-                    p.vertex(sx / 4, -sy / 2);
-                    p.vertex(sx / 2, 0);
-                    p.vertex(sx / 4, sy / 2);
-                    p.vertex(-sx / 4, sy / 2);
-                    p.vertex(-sx / 2, 0);
+                        p.vertex(-sx / 4, -sy / 2);
+                        p.vertex(sx / 4, -sy / 2);
+                        p.vertex(sx / 2, 0);
+                        p.vertex(sx / 4, sy / 2);
+                        p.vertex(-sx / 4, sy / 2);
+                        p.vertex(-sx / 2, 0);
                     p.endShape(p.CLOSE);
                 p.pop();
             }

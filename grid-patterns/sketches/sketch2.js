@@ -1,4 +1,4 @@
-// triangkle grid pattern
+// triangle grid pattern
 const sketch2 = (p) => {
     let scaleSlider;
 
@@ -12,12 +12,21 @@ const sketch2 = (p) => {
 
     p.draw = function() {
         const sx = p.width / resX; // Width of each cell
-        const sy = p.height / resY; // height of each cell
+        const sy = p.height / resY; // Height of each cell
         for (let x = 0; x <= p.width; x += sx) {
+            let row = 0;
             for (let y = 0; y <= p.height; y += sy) {
                 p.fill('green');
-                p.triangle(x - sx / 2, y + sy, x + sx / 2, y + sy, x, y);
-                p.triangle(x, y, x + sx, y, x + sx / 2, y + sy);
+                
+                // alternate triangle orientation based on row number
+                if(row % 2 === 0) {
+                    p.triangle(x, y + sy, x + sx, y + sy, x + sx / 2, y); //upward triangle
+                    p.triangle(x - sx / 2, y, x + sx / 2, y, x, y + sy); //downward triangle
+                } else {
+                    p.triangle(x - sx / 2, y + sy, x + sx / 2, y + sy, x, y); //upward trangle
+                    p.triangle(x, y, x + sx, y, x + sx / 2, y + sy); //downward triangle
+                }
+                row++;
             }
         }
     };
