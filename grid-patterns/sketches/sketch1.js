@@ -19,7 +19,7 @@ class Cell {
 
         // State
         this.alive = alive;
-
+        this.nextAlive = null;
     }
 
     setGridPosition(c,r) {
@@ -37,13 +37,22 @@ class Cell {
         }
 
         // Get coordinates of the 6 neighboring cells
-        const neighbors = [
+        // Determine neighbor offsets based on column parity (staggered columns)
+        const evenCol = this.col % 2 === 0;
+        const neighbors = evenCol ? [
             { col: this.col + 1, row: this.row },     // Right
             { col: this.col - 1, row: this.row },     // Left
             { col: this.col, row: this.row + 1 },     // Bottom
             { col: this.col, row: this.row - 1 },     // Top
-            { col: this.col + 1, row: this.row - 1 }, // Top-Right
-            { col: this.col - 1, row: this.row + 1 }  // Bottom-Left
+            { col: this.col + 1, row: this.row - 1 }, // Top-Right (even)
+            { col: this.col - 1, row: this.row - 1 }  // Top-Left (even)
+        ] : [
+            { col: this.col + 1, row: this.row },     // Right
+            { col: this.col - 1, row: this.row },     // Left
+            { col: this.col, row: this.row + 1 },     // Bottom
+            { col: this.col, row: this.row - 1 },     // Top
+            { col: this.col + 1, row: this.row + 1 }, // Bottom-Right (odd)
+            { col: this.col - 1, row: this.row + 1 }  // Bottom-Left (odd)
         ];
 
         // Count alive neighbors
@@ -53,34 +62,33 @@ class Cell {
             }
             return count;
         },0);
-        
+
+        // Compute next state without mutating current state (double buffering)
+        let next;
         if(this.alive) {
-            // Any live cell with fewer than two live 
-            // neighbours dies, as if by underpopulation.
-            if(liveNeighbors < 2) {
-                this.alive = false;
-            }
-
-            // Any live cell with two or three live neighbours 
-            // lives on to the n// Any live cell with more than three live neighbours dies, 
-            if(liveNeighbors > 3) {
-                this.alive = false;
-            }
-
+            if(liveNeighbors < 2) next = false;
+            else if(liveNeighbors > 3) next = false;
+            else next = true; // 2 or 3 -> survives
         } else {
-            // Any dead cell with exactly three live neighbours 
-            // becomes a live cell, as if by reproduction.
-            if(liveNeighbors === 3) {
-                this.alive = true;
-            }
+            next = (liveNeighbors === 3);
         }
+
+        // store next state; don't apply it yet
+        this.nextAlive = next;
         
+    }
+
+    update() {
+        if(this.nextAlive !== null) {
+            this.alive = this.nextAlive;
+            this.nextAlive = null;
+        }
     }
 
     show(p) {
         p.push();
             if (this.alive) {
-                p.fill(0);
+                p.fill('#0d5e5f');
             } else {
                 if(this.row % 2 === 0) {
                     p.fill(255);
@@ -88,6 +96,7 @@ class Cell {
                     p.fill(230);
                 }
             }
+            p.noStroke();
             p.translate(this.x, this.y);
             p.beginShape();
                 p.vertex(-this.sx / 4, -this.sy / 2);
@@ -134,7 +143,7 @@ const sketch1 = (p) => {
         }
 
         // Randomly set some cells to alive.
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 300; i++) {
             const randomX = Math.floor(p.random(0, cells.length));
             const randomY = Math.floor(p.random(0,cells[randomX].length - 1 ));
             cells[randomX][randomY].alive = true;
@@ -145,12 +154,12 @@ const sketch1 = (p) => {
         p.background(255);
         let col = 0;
         //p.noStroke();
-        for(let x = 0; x <= cells.length - 1; x++) {
-            for(let y = 0; y <= cells[x].length - 1; y++) {
-                const cell = cells[x][y];
-                cell.intersects(cells);
-                cell.show(p);
-            }
-        };
+        cells.flat().forEach(cell => {
+            cell.intersects(cells);
+        })
+        cells.flat().forEach(cell => {
+            cell.update();
+            cell.show(p);;
+        })
     };
 };
