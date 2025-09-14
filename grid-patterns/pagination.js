@@ -1,6 +1,5 @@
 let currentP5;
 const container = document.getElementById("sketch-container");
-const sketches = [sketch1, sketch2, trunchet, rotatingGlitches];
 
 // Simple paginator to switch between sketches
 let currentSketchIndex = 0;
