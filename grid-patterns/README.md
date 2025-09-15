@@ -2,8 +2,9 @@
 This is the coding assignment about grids patterns. This deliverable contains multiple experiments to illustrate the research process. Please only look at the first result for grading if you can't take multiple items into account. The other items may not always comply with the instructions. References for used inspiration or code examples can be found as comments in the source code.
 
 ## 🚀 How to run
-- Open `index.html` file in your browser.
-- View https://cc.therichard.space/grid-patterns/
+Options:
+- View `index.html` using a web server. Like you can find in the [VS Code Live Preview plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server).
+- Open https://cc.therichard.space/grid-patterns/
 
 ## 📄 Instructions
 Create a sketch that generates a different grid-based pattern each time it is run by using either the `random()` function or the `noise()` function, e.g., to choose the positions and types of shapes drawn. 
