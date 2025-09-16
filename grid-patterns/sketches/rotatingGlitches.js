@@ -24,7 +24,7 @@ const rotatingGlitches = (p) => {
           p.push();
             p.translate(x, y);
             p.rotate(p.frameCount);
-            p.scale(p.map(p.noise(p.frameCount) * 100, -1, 1, 0.9, 1.5));
+            p.scale(p.map(p.noise(p.frameCount/100) * 100, -1, 1, 0.9, 1.5));
             p.rect(0, 0, p.width / cols, p.height / rows);
           p.pop();
         }
