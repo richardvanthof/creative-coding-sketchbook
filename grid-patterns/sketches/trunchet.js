@@ -1,6 +1,7 @@
 // 5. Interactive Truchet Tiles
 // Based on https://www.youtube.com/watch?v=Vpx2OeFc26o
-
+const colors = ['#0D3B66', '#FAF0CA', '#F4D35E', '#EE964B', '#F95738'];
+const bg = '#020423';
 const trunchet = (p) => {
     let tiles = [];
 
@@ -16,20 +17,43 @@ const trunchet = (p) => {
         show() {
             p.rectMode(p.CENTER);
             p.push();
-            p.strokeWeight(0.3);
-            p.translate(this.x, this.y);
-            p.stroke(0);
-            p.rotate(this.angle);
-            p.noStroke();
-            p.rect(0, 0, this.size, this.size);
-            p.stroke(3);
-            if (this.type === 0) {
-                p.arc(-this.size / 2, -this.size / 2, this.size, this.size, 0, p.PI / 2);
-                p.arc(this.size / 2, this.size / 2, this.size, this.size, p.PI, 3 * p.PI / 2);
-            } else {
-                p.arc(-this.size / 2, this.size / 2, this.size, this.size, p.TWO_PI * 0.75, p.TWO_PI);
-                p.arc(this.size / 2, -this.size / 2, this.size, this.size, p.PI / 2, p.PI);
-            }
+                p.strokeWeight(0.3);
+                p.translate(this.x, this.y);
+                p.stroke(0);
+                p.rotate(this.angle);
+                p.noStroke();
+                p.noFill()
+                p.rect(0, 0, this.size, this.size);
+                for(let i = 5; i > 0; i--) {
+                    p.strokeWeight(i*3);
+                    const offset = i;
+                    p.stroke(colors[i - 1]);
+                    //p.scale(p.sin(p.frameCount * 0.01) * 0.2 + 0.9);
+                    p.rotate(i*.1);
+                    if (this.type === 0) {
+                        p.arc(
+                            -this.size / 2 + offset, 
+                            -this.size / 2+ offset , 
+                            this.size + offset, this.size, 0, p.PI / 2
+                        );
+                        p.arc(
+                            this.size / 2, this.size / 2, 
+                            this.size, this.size, 
+                            p.PI, 3 * p.PI / 2
+                        );
+                    } else {
+                        p.arc(
+                            -this.size / 2 + offset, 
+                            this.size / 2, this.size + offset, 
+                            this.size, p.TWO_PI * 0.75, p.TWO_PI
+                        );
+                        p.arc(
+                            this.size / 2, -this.size / 2, 
+                            this.size, this.size, 
+                            p.PI / 2, p.PI
+                        );
+                    }
+                }
             p.pop();
         }
 
@@ -44,14 +68,14 @@ const trunchet = (p) => {
                 y > this.y - this.size / 2 &&
                 y < this.y + this.size / 2
             ) {
-                this.angle += p.PI / 2;
+                this.angle += .001;
             }
         }
     }
 
     p.setup = function () {
         p.createCanvas(400, 400);
-        const amount = 20; // Amount of tiles
+        const amount = 5; // Amount of tiles
         const size = p.width / amount;
         for (let x = size / 2; x < p.width; x += size) {
             for (let y = size / 2; y < p.height; y += size) {
@@ -62,11 +86,12 @@ const trunchet = (p) => {
     };
 
     p.draw = function () {
-        // p.background(0);
+        p.background(bg);
         tiles.forEach((tile) => {
             tile.update();
             tile.detectCursor(p.mouseX, p.mouseY);
             tile.show();
         });
+       
     };
 };
