@@ -2,7 +2,7 @@ let currentP5;
 const container = document.getElementById("sketch-container");
 
 // Simple paginator to switch between sketches
-let currentSketchIndex = 0;
+
 const paginator = document.createElement("div");
 paginator.className = "paginator";
 

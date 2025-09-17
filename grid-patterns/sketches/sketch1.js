@@ -66,8 +66,7 @@ class Cell {
         // Compute next state without mutating current state (double buffering)
         let next;
         if(this.alive) {
-            if(liveNeighbors < 2) next = false;
-            else if(liveNeighbors > 3) next = false;
+            if(liveNeighbors < 2 || liveNeighbors > 3) next = false;
             else next = true; // 2 or 3 -> survives
         } else {
             next = (liveNeighbors === 3);
@@ -88,7 +87,7 @@ class Cell {
     show(p) {
         p.push();
             if (this.alive) {
-                p.fill('#0d5e5f');
+                p.fill('#329fa0');
             } else {
                 if(this.row % 2 === 0) {
                     p.fill(255);

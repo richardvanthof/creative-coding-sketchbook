@@ -16,15 +16,15 @@ const rotatingGlitches = (p) => {
       p.rectMode(p.CENTER);
       p.strokeWeight(0.3);
 
-      const offsetX = p.width / cols / 2;
+      const offsetX = (p.width / cols)*2 ;
       const offsetY = p.height / rows / 2;
       for (let x = offsetX; x < p.width; x += p.width / cols) {
         for (let y = offsetY; y < p.height; y += p.height / rows) {
           const r = p.random(0, 1);
           p.push();
             p.translate(x, y);
-            p.rotate(p.frameCount);
-            p.scale(p.map(p.noise(p.frameCount/100) * 100, -1, 1, 0.9, 1.5));
+            p.rotate(p.frameCount+(y*.3));
+            p.scale(p.map(p.noise(p.frameCount/100) * 100, -1, 1, 0.9, 1.2));
             p.rect(0, 0, p.width / cols, p.height / rows);
           p.pop();
         }

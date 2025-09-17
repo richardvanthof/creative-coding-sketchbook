@@ -28,7 +28,8 @@ const trunchet = (p) => {
                     p.strokeWeight(i*3);
                     const offset = i;
                     p.stroke(colors[i - 1]);
-                    //p.scale(p.sin(p.frameCount * 0.01) * 0.2 + 0.9);
+                    p.scale(
+                        p.map(p.sin(p.frameCount * 0.005 + (this.x+this.y)), -1, 1, .95, 1));
                     p.rotate(i*.1);
                     if (this.type === 0) {
                         p.arc(
@@ -58,7 +59,7 @@ const trunchet = (p) => {
         }
 
         update() {
-            // this.angle += 0.01;
+            this.angle += 0.0001;
         }
 
         detectCursor(x, y) {
@@ -88,7 +89,6 @@ const trunchet = (p) => {
     p.draw = function () {
         p.background(bg);
         tiles.forEach((tile) => {
-            tile.update();
             tile.detectCursor(p.mouseX, p.mouseY);
             tile.show();
         });

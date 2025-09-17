@@ -23,12 +23,15 @@ class Triangle {
         let y = this.y * this.s;
         
         p.fill(this.color);
-        
+        //p.noStroke();
         // alternate triangle orientation based on row number
         // every second row is rotated 180 deg. to make the triangles fit together.
         p.push();
             p.translate(x, y);
-            if(this.type === 0) {
+            if(
+                (this.type === 0 && this.y % 2 === 0) || 
+                (this.type === 1 && this.y % 2 === 1)
+            ) {
                 // upward triangle
                 p.triangle(
                     offset, 0,
@@ -52,7 +55,7 @@ const sketch2 = (p) => {
     let trigangleCells = [];
 
     // 6. trigangle grid
-    const res = 20;
+    const res = 7;
 
     p.setup = function() {
         p.createCanvas(400, 400);
@@ -68,7 +71,7 @@ const sketch2 = (p) => {
                     x: x,
                     y: y,
                     s: triangleSize,
-                    type: x % 2, // alternate type based on position
+                    type: x % 2,
                 }));
             };
         }
@@ -77,7 +80,7 @@ const sketch2 = (p) => {
 
     p.draw = function() {
         p.background(255);
-        trigangleCells[1][0].setColor('#ff00ff');
+        trigangleCells[0][0].setColor('#ff00ff');
         trigangleCells.flat().forEach(cell => {
             cell.show(p); 
         });

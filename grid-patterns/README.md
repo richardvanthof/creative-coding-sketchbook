@@ -1,9 +1,9 @@
 # Assignment 1: Grid Patterns
-This is the coding assignment about grids patterns. This deliverable contains multiple experiments to illustrate the research process. Please only look at the first result for grading if you can't take multiple items into account. The other items may not always comply with the instructions. References for used inspiration or code examples can be found as comments in the source code.
+This is the coding assignment about grid patterns by Richard van 't Hof. This deliverable contains multiple experiments to illustrate the research process. Please only look at the first result for grading if you can't take multiple items into account. The other items may not always comply with the instructions. References for used inspiration or code examples can be found as comments in the source code.
 
 ## 🚀 How to run
 Options:
-- View `index.html` using a web server. Like you can find in the [VS Code Live Preview plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server).
+- View `index.html` using a web server like you can find in the [VS Code Live Preview plugin](https://marketplace.visualstudio.com/items?itemName=ms-vscode.live-server).
 - Open https://cc.therichard.space/grid-patterns/
 
 ## 📄 Instructions
