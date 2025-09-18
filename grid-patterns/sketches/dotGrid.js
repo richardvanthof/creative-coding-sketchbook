@@ -6,6 +6,7 @@ const dotGrid = (p) => {
     const noiseScale = 0.03;
     let offset = 0;
     const randomizeTime = p.random(0,1000);
+    
     p.setup = function() {
       p.createCanvas(400, 400, p.WEBGL);
       p.angleMode(p.DEGREES);

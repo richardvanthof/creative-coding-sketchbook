@@ -7,23 +7,56 @@ html, body {
 canvas {
   display: block;
 }
-
-.active {
-  background-color: rgb(174, 217, 231);
-  border: 2px solid rgb(35, 59, 68);
+#sketch-container {
+  margin: 20px;
 }
 
 .paginator {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  display: flex;
-  gap: 5px;
-  & > * {
-    cursor: pointer;
-  }
+  --text: #363636;
+  margin: 20px;
+  display: inline-flex;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0px;
 }
 
-#sketch-container {
-  margin: 20px;
+.paginator button {
+  appearance: none;
+  background-color: #f5f2f2;
+  border: none;
+  padding: .5em .75em;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  border-right: 1px solid #ccc;
+}
+
+.paginator button:last-child {
+  border-right: none;
+}
+
+.paginator button:hover {
+  background-color: #f0f8ff;
+  color: var(--text);
+}
+
+.paginator .number-btn.active {
+  background-color: var(--text);
+  color: white;
+  font-weight: bold;
+}
+
+.paginator .prev-btn,
+.paginator .next-btn {
+  font-weight: bold;
+  color: var(--text);
+}
+
+.paginator .prev-btn:hover,
+.paginator .next-btn:hover {
+  background-color: #bdc9d6;
+  color: #0056b3;
 }
