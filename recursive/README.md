@@ -1,5 +1,5 @@
 # Assignment 2: Generation
-This is the coding assignment about generation by [Richard van 't Hof](https://www.therichard.space). This deliverable contains multiple experiments to illustrate the research process. Please only look at the first result for grading if you can't take multiple items into account. The other items may not always comply with the instructions. References for used inspiration or code examples can be found as comments in the source code.
+This is the coding assignment about recursive patterns by [Richard van 't Hof](https://www.therichard.space). This deliverable contains multiple experiments to illustrate the research process. Please only look at the first result for grading if you can't take multiple items into account. The other items may not always comply with the instructions. References for used inspiration or code examples can be found as comments in the source code.
 
 ## 🚀 How to run
 Options:
