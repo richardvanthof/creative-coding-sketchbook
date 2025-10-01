@@ -1,34 +1,14 @@
-// Jaki = disgusting, unclean, unsanitary, toxic, repulsive, rotten
-// Jan = Human being, person, somebody
 
-const worksheet = (p) => {
-    let font;
-    p.preload = () => {
-        font = p.loadFont('assets/SpaceMono/bold.ttf');
-    }
-
-    p.setup = () => {
-        p.createCanvas(400, 400);
-       
-    }
-
-    p.draw = () => {
-        p.background('#CBDFBD');
-        p.textFont(font);
-        p.textSize(60);
-        p.rectMode(p.CENTER);
-        p.strokeWeight(4);
     
-        p.textAlign(p.CENTER, p.CENTER);
-        
-        p.noFill();
+
+    
+    const drawFace = (p, {skinColor, eyeColor, outline}) => {
         p.push();
             p.translate(p.width*0.6,40);
             p.rotate(p.PI*0.4);
             p.push();
                 
                 // J
-                
                 p.line(35,0, -30, 0);
                 
                 p.beginShape();
@@ -57,7 +37,7 @@ const worksheet = (p) => {
                 
                 // Big eye
                 //p.noStroke();
-                p.fill('#fff')
+                p.fill(eyeColor)
                 p.circle(-5,60, 60);
 
                 // small eye
@@ -84,6 +64,7 @@ const worksheet = (p) => {
                 p.push();
                     p.beginShape();
                         //p.vertex(-50,100);
+                        p.fill(skinColor)
                         p.rotate(p.map(p.sin(p.frameCount * 0.01), -1, 1, -.5, -.3));
                         p.vertex(0,0);
                         p.vertex(130,130);
@@ -91,6 +72,7 @@ const worksheet = (p) => {
                         
                     p.endShape();
                 p.pop();
+                
                 // teeth
                 p.push();
                     p.translate(0,0);
@@ -113,10 +95,12 @@ const worksheet = (p) => {
                         
                         }
                     p.endShape(p.CLOSE);
-                    p.strokeWeight(10);
+                    p.strokeWeight(15);
                     p.line(topLip.x,topLip.y,topLip.x + topLip.w,topLip.y);
+                    
                 p.pop()
             p.pop();
         p.pop();
     }
-}
+
+    export default drawFace;

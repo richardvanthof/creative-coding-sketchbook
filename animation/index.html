@@ -19,13 +19,9 @@
 
   <body>
     <div id="sketch-container"></div>
-    <script src="sketches/worksheet.js"></script>
-    <script src="sketches/sketch2.js"></script>
-
-    <script>
-      let currentSketchIndex = 0;
-      const sketches = [worksheet, sketch2]; // Add more sketches as needed
+    <script type="module">
+      import jakiJan from './sketches/jakiJan/jakiJan.js';
+      new p5(jakiJan, 'sketch-container');  
     </script>
-    <script src="pagination.js"></script>
   </body>
 </html>
