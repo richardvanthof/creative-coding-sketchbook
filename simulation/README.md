@@ -10,7 +10,6 @@ Create a sketch that uses one or more particle systems.
 Consider how you can use particles to produce an interesting visual effect.
 You may also use a physics simulation, like the one covered in the lecture this week.
 
-
 - No reason why a particle system should start from one part of the screen.
 - You're also free in how particles should be rendered. Maybe you can use images or text.
 

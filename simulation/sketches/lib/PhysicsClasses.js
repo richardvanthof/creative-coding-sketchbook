@@ -1,6 +1,6 @@
 // Complete physics classes for the worksheet assignments - 
 // focus on the sturucture and implementation of the classes
-
+/**x,y,moving */
 class VerletParticle {
   constructor(x, y, fixed = false) {
     this.position = createVector(x, y);

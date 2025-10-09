@@ -1,3 +1,3 @@
-import worksheet1 from "./sketches/worksheet1/worksheet1.js";
+import flowfield from "./sketches/flowfield/main.js";
 
-new p5(worksheet1, document.body);
+new p5(flowfield, document.body);
