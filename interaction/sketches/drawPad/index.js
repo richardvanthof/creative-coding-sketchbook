@@ -15,7 +15,7 @@ const drawPad = (p) => {
         fixedCircleRadius = p.createSlider(10, 300, 150);
         offset = p.createSlider(10, 300, 90);
         radius = p.createSlider(10, 100, 30);
-        strokeSize = p.createSlider(0, 40, 1);
+        strokeSize = p.createSlider(0, 40, 5);
     };2
 
     p.draw = () => {

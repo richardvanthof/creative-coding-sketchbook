@@ -6,9 +6,17 @@ import calculateLaPlace from "./helpers/calculateLaPlace.js";
 
 // I know, the performance sucks. This should be done in a shader but I don't know how to do that yet :/
 
+const createSlider = (p, labelText, min, max, value, step) => {
+    const container = p.createDiv().style('margin', '10px');
+    p.createP(labelText).parent(container);
+    const slider = p.createSlider(min, max, value, step).parent(container);
+    slider.style('width', '200px');
+    return slider;
+}
+
 const reactionDiffusion = (p) => {
     let brushSize;
-    let brushShape = 'square';
+    let brushShape = 'circle';
     let showFPS;
     let cells = [];
     let cellsNext = [];
@@ -32,20 +40,24 @@ const reactionDiffusion = (p) => {
       c1 = p.color(204,57,72);
       c2 = p.color(187,68,36);
 
+      // UI CONTROLS
+      // Brush Controls
+      
+        const brushControls = p.createDiv().style('margin', '10px');
         // Brush Controls
-        p.createP('Brush Size');
-        brushSize = p.createSlider(0, 200, 20);
+        p.createP('Brush Size').parent(brushControls);
+        brushSize = p.createSlider(0, 200, 20).parent(brushControls);
         brushSize.style('width', '200px');
 
         // Brush shape
-        p.createP('Brush shape');
-        p.createDiv().addClass(['shapes-button-group btn-group']);
+        p.createP('Brush shape').parent(brushControls);
+        p.createDiv().addClass(['shapes-button-group btn-group']).parent(brushControls);
         [['❍', 'circle'], ['☐', 'square']].forEach(([icon, label]) => {
           const btn = document.createElement('button');
           btn.innerText = icon;
           btn.title = `${label} brush`;
           btn.value = label;
-          btn.classList.add('btn','btn-outline-primary');
+          btn.classList.add('btn','btn-outline-primary', btn.value === brushShape && 'active');
           btn.onclick = (e) => {
             e.target.parentNode.querySelectorAll('button').forEach(b => b.classList.remove('active'));
             e.target.classList.add('active');
@@ -54,35 +66,38 @@ const reactionDiffusion = (p) => {
           }
           document.querySelector('.shapes-button-group').appendChild(btn);
         })
+
+
+
         // Simulation Controls
-        p.createP('Diffusion A');
-        diffusionA = p.createSlider(0, 2, 1, 0.01);
+        const simControls = p.createDiv().style('margin', '10px');
+        p.createP('Diffusion A').parent(simControls);
+        diffusionA = p.createSlider(0, 2, 1, 0.01).parent(simControls);
         diffusionA.style('width', '200px');
 
-        p.createP('Diffusion B');
-        diffustionB = p.createSlider(0, 1, 0.5, 0.01);
+        p.createP('Diffusion B').parent(simControls);
+        diffustionB = p.createSlider(0, 1, 0.5, 0.01).parent(simControls);
         diffustionB.style('width', '200px');
 
-        p.createP('Feed Rate');
-        feedRate = p.createSlider(0, 0.1, 0.055, 0.001);
+        p.createP('Feed Rate').parent(simControls);
+        feedRate = p.createSlider(0, 0.1, 0.055, 0.001).parent(simControls);
         feedRate.style('width', '200px');
 
-        p.createP('Kill Rate');
-        killRate = p.createSlider(0, 0.1, 0.062, 0.001);
+        p.createP('Kill Rate').parent(simControls);
+        killRate = p.createSlider(0, 0.1, 0.062, 0.001).parent(simControls);
         killRate.style('width', '200px');
 
-        showFPS = p.createCheckbox('FPS Counter', false);
+        showFPS = p.createCheckbox('FPS Counter', false).parent(simControls);
+
+        p.createButton('Reset')
+        .addClass('btn btn-light')
+        .parent(simControls).mousePressed(() => resetCanvas());
+        p.createButton('Shortcuts').addClass('btn btn-light').parent(simControls).mousePressed(() => {});
+        p.createButton('Play/Pause').addClass('btn btn-light').parent(simControls).mousePressed(() => {});
+        p.createButton('Save frame').addClass('btn btn-light').parent(simControls).mousePressed(() => {});
       // Generate grid data structure
       // with the initial particle properties.
-      for(let x = 0; x < res; x++) {
-          cells[x] = [];
-          cellsNext[x] = [];
-          for(let y = 0; y < res; y++) {
-            const initial = { a: 1, b: 0 };
-            cells[x][y] = { ...initial };
-            cellsNext[x][y] = { ...initial };
-          }
-      }
+      resetCanvas();
       //console.log(cells)
       
     //   // Place an area of 'chemicals'
@@ -132,7 +147,12 @@ const reactionDiffusion = (p) => {
       
       p.noCursor();
       p.noFill();
-      p.rect(p.mouseX, p.mouseY, brushSize.value());
+      if(brushShape === 'circle') {
+        p.ellipse(p.mouseX, p.mouseY, brushSize.value(), brushSize.value());
+      } else {
+        p.rect(p.mouseX, p.mouseY, brushSize.value());
+      }
+      
 
       // show frameRate
       if (showFPS.checked()){
@@ -142,31 +162,63 @@ const reactionDiffusion = (p) => {
         p.pop();
       }
     }
+    
+    // Paint controls
+    p.mousePressed = (e) => paint();
+    p.mouseDragged = (e) => paint(); // BUG: sometimes this results in green squares taking over the canvas
+    p.mouseWheel = (e) => adjustBrushSize(e.delta/10);
+    p.keyPressed = () => {
+      if (p.key === ']') adjustBrushSize(3);
+      if (p.key === '[') adjustBrushSize(-3);
+    };
 
-    p.mouseWheel = (e) => {
-        brushSize.value(brushSize.value() + (e.delta/10));
-    }
+    const paint = () => {
+       const bs = brushSize.value();
+        const xStart = p.floor(p.constrain(p.mouseX - bs / 2, 0, p.width - 1));
+        const yStart = p.floor(p.constrain(p.mouseY - bs / 2, 0, p.height - 1));
+        const xEnd   = p.floor(p.constrain(p.mouseX + bs / 2, 0, p.width - 1));
+        const yEnd   = p.floor(p.constrain(p.mouseY + bs / 2, 0, p.height - 1));
 
-    p.mousePressed = (e) => {
-        const bs = brushSize.value();
-          const xStart = p.floor(p.constrain(p.mouseX - bs / 2, 0, p.width - 1));
-          const yStart = p.floor(p.constrain(p.mouseY - bs / 2, 0, p.height - 1));
-          const xEnd   = p.floor(p.constrain(p.mouseX + bs / 2, 0, p.width - 1));
-          const yEnd   = p.floor(p.constrain(p.mouseY + bs / 2, 0, p.height - 1));
-        for (let x = xStart; x < xEnd; x++) {
+        if (brushShape === 'circle') {
+          const cx = p.mouseX;
+          const cy = p.mouseY;
+          const r = bs / 2;
+          const r2 = r * r;
+          for (let x = xStart; x < xEnd; x++) {
             for (let y = yStart; y < yEnd; y++) {
-                cells[x][y].b = 1;
+              const dx = x - cx;
+              const dy = y - cy;
+              if (dx * dx + dy * dy <= r2) {
+          cells[x][y].b = 1;
+              }
             }
+          }
+        } else {
+          for (let x = xStart; x < xEnd; x++) {
+            for (let y = yStart; y < yEnd; y++) {
+              cells[x][y].b = 1;
+            }
+          }
         }
     }
-
+    const adjustBrushSize = (mutation) => brushSize.value(brushSize.value() + mutation);
+    const resetCanvas = () => {
+      cells = [];
+      for(let x = 0; x < res; x++) {
+          cells[x] = [];
+          cellsNext[x] = [];
+          for(let y = 0; y < res; y++) {
+            const initial = { a: 1, b: 0 };
+            cells[x][y] = { ...initial };
+            cellsNext[x][y] = { ...initial };
+          }
+      }
+    }
     const swap = () => {
       let cache = cells
       cells = cellsNext;
       cellsNext = cache;
     }
-
-   
 }
 
 
