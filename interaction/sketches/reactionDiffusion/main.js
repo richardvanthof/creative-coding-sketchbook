@@ -5,7 +5,7 @@ import calculateLaPlace from "./helpers/calculateLaPlace.js";
 // https://www.karlsims.com/rdtool.html?s=7PN0Zo9kbN1yTq00EM7
 // https://www.karlsims.com/rd.html
 
-// I know, the performance sucks. This should be done in a shader but I don't know how to do that yet :/
+// I know, the performance is not great. This should be done in a shader but I don't know how to do that yet :/
 // Other performance tips always welcome!
 
 const createSlider = (p, labelText, min, max, value, step) => {
@@ -43,37 +43,19 @@ const reactionDiffusion = (p) => {
   ];
 
   p.setup = () => {
-    const wrapper = p.createDiv().class("reactionDiffusion-layout");
+    const wrapper = p.createDiv().class("layout");
     graphic = p.createCanvas(200, 200).parent(wrapper);
     p.pixelDensity(1);
     p.rectMode(p.CENTER);
+    p.colorMode(p.HSB, 1); // Normalize HSB to 0-1
     res = p.width;
 
-    c1 = p.color(204, 57, 72);
-    c2 = p.color(187, 68, 36);
-
     // UI CONTROLS
-
+  const controls = p.createDiv().addClass('controls-wrapper').parent(wrapper);
     // Canvas Controls
-    const canvasControls = p.createDiv().addClass('menu-bar').parent(wrapper);
-    // p.createButton("Play/Pause")
-    //   .addClass("btn btn-light")
-    //   .parent(canvasControls)
-    //   .mousePressed(() => {});
-    p.createButton("Reset")
-      .addClass("btn btn-light")
-      .parent(canvasControls)
-      .mousePressed(() => resetCanvas());
-    p.createButton("Save frame")
-      .addClass("btn btn-light")
-      .parent(canvasControls)
-      .mousePressed(() => saveFrame());
-    p.createButton("Shortcuts")
-      .addClass("btn btn-light")
-      .parent(canvasControls)
-      .mousePressed(() => helpDialog.showModal());
+   
     
-    const controls = p.createDiv().addClass('controls-wrapper').parent(wrapper);
+  
     // Brush Controls
     const brushControls = p.createDiv().addClass('controls').parent(controls);
     p.createP("Brush Size").parent(brushControls);
@@ -111,8 +93,10 @@ const reactionDiffusion = (p) => {
     // Canvas Colors
     const canvasColors = p.createDiv().addClass('controls').parent(controls);
     p.createP("Colors").parent(canvasColors);
-    c1 = p.createColorPicker("#cc3948").parent(canvasColors);
-    c2 = p.createColorPicker("#bb4424").parent(canvasColors);
+    c1 = p.createColorPicker("#fff").parent(canvasColors);
+    c2 = p.createColorPicker("#000").parent(canvasColors);
+
+    //console.log(c1.color())
 
     // Simulation Controls
     const simControls = p.createDiv().addClass('controls').parent(controls);
@@ -157,6 +141,24 @@ const reactionDiffusion = (p) => {
       "dialog",
       "Hold [ and ] to change brush size"
     );
+
+     const canvasControls = p.createDiv().addClass('controls').parent(controls);
+    // p.createButton("Play/Pause")
+    //   .addClass("btn btn-light")
+    //   .parent(canvasControls)
+    //   .mousePressed(() => {});
+    p.createButton("Save frame")
+      .addClass("btn btn btn-outline-primary")
+      .parent(canvasControls)
+      .mousePressed(() => saveFrame());
+    p.createButton("Reset")
+      .addClass("btn btn btn-outline-secondary")
+      .parent(canvasControls)
+      .mousePressed(() => resetCanvas());
+    // p.createButton("Shortcuts")
+    //   .addClass("btn btn btn-outline-primary")
+    //   .parent(canvasControls)
+    //   .mousePressed(() => helpDialog.showModal());
     
     // Generate grid data structure
     // with the initial particle properties.
@@ -196,13 +198,23 @@ const reactionDiffusion = (p) => {
       });
     });
 
+    // Define gradient endpoints once outside the loop
+    const [r1, g1, b1, a1] = c1.color().levels;
+    const [r2, g2, b2, a2] = c2.color().levels;
+
     for (let x = 0; x < p.width; x++) {
       for (let y = 0; y < p.height; y++) {
-        // Update pixel colors
+        let t = cellsNext[x][y].b; // 
+
+        // Manual RGB interpolation 
+        let r = r1 + (r2 - r1) * t;
+        let g = g1 + (g2 - g1) * t;
+        let b = b1 + (b2 - b1) * t;
+
         let pix = (x + y * p.width) * 4;
-        p.pixels[pix + 0] = p.floor(cellsNext[x][y].a * 255);
-        p.pixels[pix + 1] = 255;
-        p.pixels[pix + 2] = p.floor(cellsNext[x][y].b * 255);
+        p.pixels[pix + 0] = r;
+        p.pixels[pix + 1] = g;
+        p.pixels[pix + 2] = b;
         p.pixels[pix + 3] = 255;
       }
     }
