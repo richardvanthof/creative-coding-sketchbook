@@ -24,6 +24,7 @@ const reactionDiffusion = (p) => {
   let cells = [];
   let cellsNext = [];
   let c1, c2, res;
+  let paused = false;
 
   let diffusionA = 1, //diffusion rate A
     diffustionB = 0.5, // diffusion rate B
@@ -238,6 +239,10 @@ const reactionDiffusion = (p) => {
     }
   };
 
+
+
+
+  
   // Paint controls
   p.mousePressed = (e) => paint();
   p.mouseDragged = (e) => paint(); // BUG: sometimes this results in green squares taking over the canvas
