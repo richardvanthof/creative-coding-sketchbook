@@ -31,3 +31,5 @@ const rotatingGlitches = (p) => {
       }
     };
 };
+
+export default rotatingGlitches;

@@ -9,7 +9,7 @@ const mutualAttraction = (p) => {
       p.createCanvas(600, 600);
       // p.camera(0, 0, 800, 0, 0, 0, 0, 1, 0);
       reset();
-      p.background(50);
+      p.background('#364156');
       p.createP('Enhanced version by <a target="_blanc" href="https://www.robsaunders.net/">Rob Saunders (Associate Professor LIACS)</a>')
     }
 

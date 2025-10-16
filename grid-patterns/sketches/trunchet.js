@@ -95,3 +95,5 @@ const trunchet = (p) => {
        
     };
 };
+
+export default trunchet;

@@ -36,3 +36,5 @@ const dotGrid = (p) => {
       offset += 0.1;
     };
 };
+
+export default dotGrid;

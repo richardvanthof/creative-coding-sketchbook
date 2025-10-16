@@ -36,3 +36,5 @@ const increasingDots = (p) => {
     }
   }
 }
+
+export default increasingDots;
