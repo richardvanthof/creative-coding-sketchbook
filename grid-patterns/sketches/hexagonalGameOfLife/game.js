@@ -2,6 +2,7 @@ import Cell from "./Cell.js";
 
 // Hexagonal Game of Life
 // rules: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+
 const hexGameOfLife = (p) => {
     let scale = 20;
     let cells = [];
