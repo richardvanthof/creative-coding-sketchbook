@@ -102,7 +102,7 @@ const reactionDiffusion = (p) => {
     // Simulation Controls
     const simControls = p.createDiv().addClass('controls').parent(controls);
 
-    p.createP(`Presets`).parent(simControls);
+    p.createP(`Presets`).addClass('label').parent(simControls);
     currentPreset = p.createSelect().parent(simControls);
     currentPreset.addClass("form-select"); // Bootstrap styling
     currentPreset.attribute("aria-label", "Preset select");
@@ -117,21 +117,21 @@ const reactionDiffusion = (p) => {
       currentPreset.option(pattern, [F, k]);
     });
 
-    p.createP(`Feed Rate`).parent(simControls);
+    p.createP(`Feed Rate`).addClass('label').parent(simControls);
     feedRate = p.createSlider(0.002, 0.12, 0.055, 0.0001).parent(simControls);
     feedRate.style("width", "200px");
 
-    p.createP(`Kill Rate`).parent(simControls);
+    p.createP(`Kill Rate`).addClass('label').parent(simControls);
     killRate = p.createSlider(0.03, 0.07, 0.062, 0.0001).parent(simControls);
     killRate.style("width", "200px");
 
-    const advancedSimControls = p.createElement("details").parent(simControls);
+    const advancedSimControls = p.createElement("details").addClass('label').parent(simControls);
     p.createElement("summary", "Advanced").parent(advancedSimControls);
-    p.createP(`Diffusion A`).parent(advancedSimControls);
+    p.createP(`Diffusion A`).addClass('label').parent(advancedSimControls);
     diffusionA = p.createSlider(0, 2, 1, 0.01).parent(advancedSimControls);
     diffusionA.style("width", "200px");
 
-    p.createP(`Diffusion B`).parent(advancedSimControls);
+    p.createP(`Diffusion B`).addClass('label').parent(advancedSimControls);
     diffustionB = p.createSlider(0, 1, 0.5, 0.01).parent(advancedSimControls);
     diffustionB.style("width", "200px");
 
