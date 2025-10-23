@@ -1,39 +1,64 @@
+/* Theme variables driven by html[data-bs-theme] */
+html[data-bs-theme="light"] {
+    --bg: whitesmoke;
+    --panel-bg: white;
+    --text: #111;
+    --border: #f5eaea;
+    --button-bg: transparent;
+}
+
+html[data-bs-theme="dark"] {
+    --bg: #0f1011;
+    --panel-bg: #121214;
+    --text: #e6e6e6;
+    --border: #2a2a2a;
+    --button-bg: transparent;
+}
+
+/* Layout */
 .layout {
     display: grid;
     grid-template-columns: 25rem auto;
     grid-template-rows: 100vh;
-    background: whitesmoke;
+    background: var(--bg);
+    color: var(--text);
+}
 
-    .p5Canvas {
-        grid-column: 2;
-        grid-row: 1;
-        align-self: center;
-    }
+/* Children */
+.layout .p5Canvas {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: center;
+}
 
-    .menu-bar {
-        grid-column: 1;
-        grid-row: 1;
-        padding: 1em;
-        background: white;
-        button {
-            margin-right: 0.5em;
-        }
-    }
+.layout .menu-bar {
+    grid-column: 1;
+    grid-row: 1;
+    padding: 1em;
+    background: var(--panel-bg);
+    color: var(--text);
+}
+.layout .menu-bar button {
+    margin-right: 0.5em;
+    background: var(--button-bg);
+    color: var(--text);
+    border: none;
+}
 
-    .label {
-        margin-top: 1.22em;;
-    }
+/* Misc */
+.layout .label {
+    margin-top: 1.22em;
+}
 
-    .controls {
-        padding: 1em 0;
-        display:block;
-        border-bottom: 1px solid #f5eaea;
-    }
+.layout .controls {
+    padding: 1em 0;
+    display: block;
+    border-bottom: 1px solid var(--border);
+}
 
-    .controls-wrapper {
-        padding: 1em;
-        background: white;
-        grid-row: 1;
-        grid-column: 1;
-    }
+.layout .controls-wrapper {
+    padding: 1em;
+    background: var(--panel-bg);
+    grid-row: 1;
+    grid-column: 1;
 }
