@@ -5,12 +5,5 @@ This is the coding assignment by [Richard van 't Hof](https://www.therichard.spa
 ## 🚀 How to run
 View `index.html` using a web server like you can find in the VS Code Live Preview plugin.
 
-## 📄 Instructions
-Create a sketch that uses one or more particle systems.
-Consider how you can use particles to produce an interesting visual effect.
-You may also use a physics simulation, like the one covered in the lecture this week.
-
-- No reason why a particle system should start from one part of the screen.
-- You're also free in how particles should be rendered. Maybe you can use images or text.
-
-![This but moving]('/assets/sample.png')
+## 📄 Instructions: do something with sound!
+Create a sketch that uses the p5.Sound library in response to either user input, e.g., mouse or keyboard events, or in response to changing variables in a sketch as a result of a simulation. The examples provided with in p5.Sound library reference provide lots of good starting points for interactive sketches. Or you may enhance one of your previous sketches with sound, e.g., create a sketchpad with sound. Just do something with the sound library.
