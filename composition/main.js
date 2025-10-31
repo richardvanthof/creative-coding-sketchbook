@@ -1,3 +1,3 @@
-import pagination from "../lib/pagination.js";
-import sketch from "./sketches/sketch.js";
+import pagination from "./lib/pagination.js";
+import sketch from "./sketches/Fire/sketch.js";
 pagination([sketch]);
