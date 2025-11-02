@@ -9,7 +9,7 @@ class TrackingInstance {
         this.video = null;
         this.pendingStream = null;
         this.smoothedKeypoints = [];
-        this.smoothingFactor = 0.25;
+        this.smoothingFactor = 0.9;
         this.config = {
             showVideo: true
         }

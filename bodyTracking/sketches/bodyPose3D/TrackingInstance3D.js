@@ -9,7 +9,7 @@ class TrackingInstance3D {
         this.video = null;
         this.pendingStream = null;
         this.smoothedKeypoints = [];
-        this.smoothingFactor = 0.25;
+        this.smoothingFactor = 0.6;
         this.config = {
             showVideo: true
         }
