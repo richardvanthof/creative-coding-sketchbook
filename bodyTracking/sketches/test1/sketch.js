@@ -1,77 +1,38 @@
-let video;
-let bodyPose;
-let poses = [];
-let connections;
-let showVideo = false;
-let toggleVideoButton;
+import TrackingInstance from './TrackingInstance.js';
+
+let tracker;
+
 const test1 = (p) => {
-
     p.preload = () => {
-       bodyPose = ml5.bodyPose("BlazePose");
-    };
-
-    p.setup = async () => {
-        p.createCanvas(640, 480);
-        video = p.createCapture(p.VIDEO);
-        video.size(p.width, p.height);
-        video.hide();
-        p.createP('Pose model using BlazePose');
-        toggleVideoButton = p.createButton('Show Video');
-        toggleVideoButton.mousePressed(() => {
-            showVideo = !showVideo;
-            if (showVideo) {
-                video.show();
-                toggleVideoButton.html('Hide Video');
-            } else {
-                video.hide();
-                toggleVideoButton.html('Show Video');
-            }
-        });
-        const detector = bodyPose.detectStart(video, gotPoses);
-        connections = bodyPose.getSkeleton();
-    };
-
-    p.draw = () => {
-        p.background(0,0,0,50);
-        //p.image(video, 0, 0, p.width, p.height);
-        drawSkeleton();
-        
-    };
-
-    const gotPoses = (results) => {
-        //console.log(results);
-        poses = results;
-    };
-
-    const drawSkeleton = () => {
-        for (let i = 0; i < poses.length; i++) {
-            const pose = poses[i];
-            for (let j = 0; j < connections.length; j++) {
-                const pointAIndex = connections[j][0];
-                const pointBIndex = connections[j][1];
-                const pointA = pose.keypoints[pointAIndex];
-                const pointB = pose.keypoints[pointBIndex];
-                if (pointA.confidence > 0.1 && pointB.confidence > 0.1) {
-                    p.stroke(255, 0, 0);
-                    p.strokeWeight(2);
-                    p.line(pointA.x, pointA.y, pointB.x, pointB.y);
-                }
-            }
-        }
-
-        for (let i = 0; i < poses.length; i++) {
-            const pose = poses[i];
-            for (let j = 0; j < pose.keypoints.length; j++) {
-                const keypoint = pose.keypoints[j];
-                if (keypoint.confidence > 0.1) {
-                    p.fill(0, 255, 0);
-                    p.noStroke();
-                    p.circle(keypoint.x, keypoint.y, 10);
-                }
-            }
-        }
+        tracker = new TrackingInstance(p, 'webcam');
     }
 
+    p.setup = async () => {
+        p.createCanvas(720, 480);
+        await tracker.init();
+        tracker.showBgVideo(true);
+
+        //DEBUG
+        const style = p.createSelect().addClass('form-select mt-2 mb-2');
+        style.option('debug');
+        style.option('points');
+        style.option('skeleton');
+
+        const videoSource = p.createSelect().addClass('form-select mt-2 mb-2');
+        videoSource.option('Webcam', 'webcam');
+        videoSource.option('TikTok', 'assets/videos/tiktok.mp4');
+        videoSource.option('Workout', 'assets/videos/workout.mov');
+        videoSource.changed(e => {
+            tracker.loadVideoSource(e.target.value);
+        });
+    }
+
+    p.draw = () => {
+        p.background(0,0,0);
+        tracker.display();
+        // p.translate(200,0);
+        // tracker.display();
+    }
 }
 
 export default test1;
