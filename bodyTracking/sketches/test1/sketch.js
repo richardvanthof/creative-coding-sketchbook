@@ -25,6 +25,11 @@ const test1 = (p) => {
         videoSource.changed(e => {
             tracker.loadVideoSource(e.target.value);
         });
+
+        const showBgVid = p.createCheckbox('Show Background Video', true).addClass('form-check-input');
+        showBgVid.changed(e => {
+            tracker.showBgVideo(e.target.checked);
+        });
     }
 
     p.draw = () => {

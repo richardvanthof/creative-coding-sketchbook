@@ -1,4 +1,4 @@
-class TrackingInstance {
+class TrackingInstance3D {
     constructor(p, source) {
         this.p = p;
         this.currentStyle = 'debug';
@@ -32,31 +32,44 @@ class TrackingInstance {
         }
 
         this.poses.forEach((pose, poseIndex) => {
-            const keypoints = pose.keypoints;
-            if (!this.smoothedKeypoints[poseIndex]) {
+           
+            const keypoints3D = Array.isArray(pose.keypoints3D) ? pose.keypoints3D : [];
+            const keypoints2D = Array.isArray(pose.keypoints) ? pose.keypoints : [];
+            const keypoints = keypoints3D.length ? keypoints3D : keypoints2D;
+            if (!keypoints.length) {
+                this.smoothedKeypoints[poseIndex] = [];
+                return;
+            }
+            if (!this.smoothedKeypoints[poseIndex] || this.smoothedKeypoints[poseIndex].length !== keypoints.length) {
                 this.smoothedKeypoints[poseIndex] = keypoints.map(point => ({
                     x: point.x,
                     y: point.y,
-                    confidence: point.confidence
+                    z: point.z ?? 0,
+                    confidence: point.confidence ?? 0
                 }));
                 return;
             }
 
             const buffer = this.smoothedKeypoints[poseIndex];
             keypoints.forEach((point, pointIndex) => {
+                if (!point) {
+                    return;
+                }
                 const cached = buffer[pointIndex];
                 if (!cached) {
                     buffer[pointIndex] = {
                         x: point.x,
                         y: point.y,
-                        confidence: point.confidence
+                        z: point.z ?? 0,
+                        confidence: point.confidence ?? 0
                     };
                     return;
                 }
 
                 cached.x = this.p.lerp(cached.x, point.x, this.smoothingFactor);
                 cached.y = this.p.lerp(cached.y, point.y, this.smoothingFactor);
-                cached.confidence = point.confidence;
+                cached.z = this.p.lerp(cached.z, point.z ?? 0, this.smoothingFactor);
+                cached.confidence = point.confidence ?? cached.confidence ?? 0;
             });
         });
 
@@ -131,39 +144,80 @@ class TrackingInstance {
     }
 
     drawDebugSkeleton() {
-        const connections = this.connections;
-        for (let i = 0; i < this.poses.length; i++) {
-            const pose = this.poses[i];
-            const smoothed = this.smoothedKeypoints[i];
-            for (let j = 0; j < connections.length; j++) {
-                const pointAIndex = connections[j][0];
-                const pointBIndex = connections[j][1];
-                const pointAData = pose.keypoints[pointAIndex];
-                const pointBData = pose.keypoints[pointBIndex];
-                const pointA = smoothed && smoothed[pointAIndex] ? smoothed[pointAIndex] : pointAData;
-                const pointB = smoothed && smoothed[pointBIndex] ? smoothed[pointBIndex] : pointBData;
+        const { p, poses, connections, smoothedKeypoints } = this;
+        if (!poses.length || !connections.length) return;
 
-                if (pointAData.confidence > 0.1 && pointBData.confidence > 0.1) {
-                    this.p.stroke(255, 0, 0);
-                    this.p.strokeWeight(2);
-                    this.p.line(pointA.x, pointA.y, pointB.x, pointB.y);
+        const toCanvasSpace = (point) => {
+            if (!point) return null;
+            const hasZ = Number.isFinite(point.z);
+            if (!hasZ) {
+                return { x: point.x, y: point.y, z: 0 };
+            }
+            return {
+                x: (point.x - 0.5) * p.width/2,
+                y: (point.y - 0.5) * p.height/2,
+                z: -point.z * p.width
+            };
+        };
+
+        p.push();
+        for (let i = 0; i < poses.length; i++) {
+            const pose = poses[i];
+            const smoothed = smoothedKeypoints[i];
+            const use3D = !!(pose.keypoints3D && pose.keypoints3D.length);
+
+            for (let j = 0; j < connections.length; j++) {
+                const [aIdx, bIdx] = connections[j];
+                const baseA = use3D ? pose.keypoints3D[aIdx] : pose.keypoints[aIdx];
+                const baseB = use3D ? pose.keypoints3D[bIdx] : pose.keypoints[bIdx];
+                const pointAData = smoothed?.[aIdx] ?? baseA;
+                const pointBData = smoothed?.[bIdx] ?? baseB;
+                if (!pointAData || !pointBData) continue;
+
+                const confA = pose.keypoints[aIdx]?.confidence ?? pointAData.confidence ?? 0;
+                const confB = pose.keypoints[bIdx]?.confidence ?? pointBData.confidence ?? 0;
+                if (confA <= 0.1 || confB <= 0.1) continue;
+
+                const pointA = toCanvasSpace(pointAData);
+                const pointB = toCanvasSpace(pointBData);
+                if (!pointA || !pointB) continue;
+
+                p.stroke(255, 0, 0);
+                p.strokeWeight(2);
+                if (use3D) {
+                    p.line(pointA.x, pointA.y, pointA.z, pointB.x, pointB.y, pointB.z);
+                } else {
+                    p.line(pointA.x, pointA.y, pointB.x, pointB.y);
                 }
             }
         }
 
-        for (let i = 0; i < this.poses.length; i++) {
-            const pose = this.poses[i];
-            const smoothed = this.smoothedKeypoints[i];
+        for (let i = 0; i < poses.length; i++) {
+            const pose = poses[i];
+            const smoothed = smoothedKeypoints[i];
+            const use3D = !!(pose.keypoints3D && pose.keypoints3D.length);
+
             for (let j = 0; j < pose.keypoints.length; j++) {
                 const keypoint = pose.keypoints[j];
-                if (keypoint.confidence > 0.1) {
-                    const point = smoothed && smoothed[j] ? smoothed[j] : keypoint;
-                    this.p.fill(0, 255, 0);
-                    this.p.noStroke();
-                    this.p.circle(point.x, point.y, 10);
+                if (keypoint.confidence <= 0.1) continue;
+
+                const source = smoothed?.[j] ?? (use3D ? pose.keypoints3D[j] : keypoint);
+                const point = toCanvasSpace(source);
+                if (!point) continue;
+
+                p.noStroke();
+                p.fill(0, 255, 0);
+                if (use3D) {
+                    p.push();
+                    p.translate(point.x, point.y, point.z);
+                    p.sphere(5);
+                    p.pop();
+                } else {
+                    p.circle(point.x, point.y, 10);
                 }
             }
         }
+        p.pop();
     }
 
     showBgVideo(active) {
@@ -171,19 +225,11 @@ class TrackingInstance {
     }
 
     display(style) {
-        if (this.video) {
-            if (this.config.showVideo) {
-                this.p.image(this.video, 0, 0, this.p.width, this.p.height);
-            } else {
-                this.p.push();
-                this.p.tint(255, 0);
-                this.p.image(this.video, 0, 0, this.p.width, this.p.height);
-                this.p.pop();
-            }
-        }
+        
+        //this.config.showVideo && this.p.image(this.video, 0, 0, this.p.width, this.p.height);
         if(!style || style === 'debug') this.drawDebugSkeleton();
         else style(this.poses, this.connections);
     }
 }
 
-export default TrackingInstance;
+export default TrackingInstance3D;
