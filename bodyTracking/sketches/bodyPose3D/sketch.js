@@ -8,7 +8,7 @@ const test1 = (p) => {
     }
 
     p.setup = async () => {
-        p.createCanvas(720, 480, p.WEBGL);
+        p.createCanvas(1280, 720, p.WEBGL);
         await tracker.init();
         tracker.showBgVideo(true);
 

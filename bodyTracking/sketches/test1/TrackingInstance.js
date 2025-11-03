@@ -11,7 +11,8 @@ class TrackingInstance {
         this.smoothedKeypoints = [];
         this.smoothingFactor = 0.9;
         this.config = {
-            showVideo: true
+            showVideo: true,
+            debugSkeleton: true
         }
         this.source = source;
         this.bodyPosePromise = ml5.bodyPose("BlazePose");
@@ -170,7 +171,11 @@ class TrackingInstance {
         this.config.showVideo = active;
     }
 
-    display(style) {
+    showDebugSkeleton(active) {
+        this.config.debugSkeleton = active;
+    }
+
+    display(callbackStyle) {
         if (this.video) {
             if (this.config.showVideo) {
                 this.p.image(this.video, 0, 0, this.p.width, this.p.height);
@@ -181,8 +186,8 @@ class TrackingInstance {
                 this.p.pop();
             }
         }
-        if(!style || style === 'debug') this.drawDebugSkeleton();
-        else style(this.poses, this.connections);
+        this.config.debugSkeleton && this.drawDebugSkeleton();
+        callbackStyle && callbackStyle(this.poses, this.smoothedKeypoints, this.connections);
     }
 }
 
