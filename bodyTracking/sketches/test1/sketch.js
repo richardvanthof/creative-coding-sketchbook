@@ -6,11 +6,15 @@ let tracker;
 let discoTexture;
 let currentStyle;
 let bgBlend;
+
+let headTexture;
+
 const test1 = (p) => {
     
 
     p.preload = () => {
         tracker = new TrackingInstance(p, 'webcam');
+        headTexture = p.loadImage('assets/textures/head.png');
     }
 
     p.setup = async () => {
@@ -28,16 +32,20 @@ const test1 = (p) => {
                 discoTexture.fill(shade);
                 discoTexture.rect(x, y, tileSize, tileSize);
             }
-        }
+        };
 
         //DEBUG CONTROLS
         const styles = {
             none: null,
             points: discoBallStyle,
+            collage: collage,
+            collage2: collage2
         };
         const style = p.createSelect().addClass('form-select mt-2 mb-2');
         style.option('None', 'none');
-        style.option('Balls', 'points');
+        style.option('Spheres', 'points');
+        style.option('Collage', 'collage');
+        style.option('Collage2', 'collage');
         style.changed(() => {
             currentStyle = styles[style.value()];
         });
@@ -97,11 +105,97 @@ const test1 = (p) => {
                             if (discoTexture) {
                                 p.texture(discoTexture);
                             }
-                            p.sphere(15, 32, 24);
+                            p.sphere(10, 32, 24);
                         p.pop();
                 }
             }
         }
+    }
+
+    const collage = (poses, smoothedKeypoints, connections) => {
+
+        for (let i = 0; i < poses.length; i++) {
+            const pose = poses[i];
+            const smoothed = smoothedKeypoints[i];
+            for (let j = 0; j < connections.length; j++) {
+                const pointAIndex = connections[j][0];
+                const pointBIndex = connections[j][1];
+                const pointAData = pose.keypoints[pointAIndex];
+                const pointBData = pose.keypoints[pointBIndex];
+                const pointA = smoothed && smoothed[pointAIndex] ? smoothed[pointAIndex] : pointAData;
+                const pointB = smoothed && smoothed[pointBIndex] ? smoothed[pointBIndex] : pointBData;
+
+                const vector = p.createVector(pointB.x - pointA.x, pointB.y - pointA.y);
+
+                if (pointAData.confidence > 0.1 && pointBData.confidence > 0.1) {
+                    p.push();
+                        p.translate(pointA.x, pointA.y);
+                        p.rotateZ(vector.heading());
+                        const distance = vector.mag();
+                        p.scale(distance / headTexture.width, distance / headTexture.height);
+                        p.texture(headTexture);
+                        p.image(headTexture, 0,0)
+                    p.pop();
+                }
+            }
+        }
+
+        // for (let i = 0; i < poses.length; i++) {
+        //     const pose = poses[i];
+        //     const smoothed = smoothedKeypoints[i];
+        //     for (let j = 0; j < pose.keypoints.length; j++) {
+        //         const keypoint = pose.keypoints[j];
+        //         if (keypoint.confidence > 0.1) {
+        //             const point = smoothed && smoothed[j] ? smoothed[j] : keypoint;
+        //             p.fill(0, 255, 0);
+        //             p.noStroke();
+        //             //p.circle(point.x, point.y, 10);
+        //         }
+        //     }
+        // }
+    }
+
+    const collage2 = (poses, smoothedKeypoints, connections) => {
+
+        for (let i = 0; i < poses.length; i++) {
+            const pose = poses[i];
+            const smoothed = smoothedKeypoints[i];
+            for (let j = 0; j < connections.length; j++) {
+                const pointAIndex = connections[j][0];
+                const pointBIndex = connections[j][1];
+                const pointAData = pose.keypoints[pointAIndex];
+                const pointBData = pose.keypoints[pointBIndex];
+                const pointA = smoothed && smoothed[pointAIndex] ? smoothed[pointAIndex] : pointAData;
+                const pointB = smoothed && smoothed[pointBIndex] ? smoothed[pointBIndex] : pointBData;
+
+                const vector = p.createVector(pointB.x - pointA.x, pointB.y - pointA.y);
+
+                if (pointAData.confidence > 0.1 && pointBData.confidence > 0.1) {
+                    p.push();
+                        p.translate(pointA.x, pointA.y);
+                        p.rotateZ(vector.heading());
+                        const distance = vector.mag();
+                        p.scale(distance / headTexture.width, distance / headTexture.height);
+                        p.texture(headTexture);
+                        p.image(headTexture, 0,0)
+                    p.pop();
+                }
+            }
+        }
+
+        // for (let i = 0; i < poses.length; i++) {
+        //     const pose = poses[i];
+        //     const smoothed = smoothedKeypoints[i];
+        //     for (let j = 0; j < pose.keypoints.length; j++) {
+        //         const keypoint = pose.keypoints[j];
+        //         if (keypoint.confidence > 0.1) {
+        //             const point = smoothed && smoothed[j] ? smoothed[j] : keypoint;
+        //             p.fill(0, 255, 0);
+        //             p.noStroke();
+        //             //p.circle(point.x, point.y, 10);
+        //         }
+        //     }
+        // }
     }
 }
 
