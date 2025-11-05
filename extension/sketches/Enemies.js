@@ -21,7 +21,7 @@ class Enemies {
     }
 
     reset() {
-        // value 0 = empty, 1 = filled, 2 = at egdge;
+        // value 0 = empty, 1 = filled
         this.enemies = Array.from({ length: this.rows }, () => Array(this.cols).fill(0));
         // set targets
         for(let row = 0; row <= this.enemiesRows; row++) {
@@ -113,7 +113,7 @@ class Enemies {
                 }
             });
         });
-        
+
         // Debug 
         //this.targets.forEach(target => {
         //     this.p.push();
