@@ -1,3 +1,4 @@
+
 class TrackingInstance {
     constructor(p, source) {
         this.p = p;
@@ -173,6 +174,10 @@ class TrackingInstance {
 
     showDebugSkeleton(active) {
         this.config.debugSkeleton = active;
+    }
+
+    logTrackingInfo() {
+        console.log(this.poses);
     }
 
     display(callbackStyle) {

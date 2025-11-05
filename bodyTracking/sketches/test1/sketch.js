@@ -8,13 +8,22 @@ let currentStyle;
 let bgBlend;
 
 let headTexture;
+let elbowUnder, elbowUpper, tutu, head;
 
 const test1 = (p) => {
     
 
     p.preload = () => {
         tracker = new TrackingInstance(p, 'webcam');
+
+        // collage1
         headTexture = p.loadImage('assets/textures/head.png');
+
+        //collage2
+        elbowUnder = p.loadImage('assets/textures/Arm-top.png');
+        elbowUpper = p.loadImage('assets/textures/Arm-bottom.png');
+        tutu = p.loadImage('assets/textures/tutu.png');
+        head = p.loadImage('assets/textures/head2.png');
     }
 
     p.setup = async () => {
@@ -45,7 +54,7 @@ const test1 = (p) => {
         style.option('None', 'none');
         style.option('Spheres', 'points');
         style.option('Collage', 'collage');
-        style.option('Collage2', 'collage');
+        style.option('Collage2', 'collage2');
         style.changed(() => {
             currentStyle = styles[style.value()];
         });
@@ -75,16 +84,18 @@ const test1 = (p) => {
     }
 
     p.draw = () => {
-    p.translate(-p.width/2, -p.height/2);
-    p.background(0,0,0, bgBlend.value());
-    p.ambientLight(40);
-    p.directionalLight(120, 120, 255, -0.3, 0.8, -0.6);
-    p.pointLight(255, 255, 255, p.width * 0.6, -p.height * 0.5, 300);
-        tracker.display(currentStyle);
-        p.orbitControl();
-        // p.translate(200,0);
-        // tracker.display();
-    }
+        p.translate(-p.width/2, -p.height/2);
+        p.background(0,0,0, 255);
+        p.ambientLight(40);
+        p.directionalLight(120, 120, 255, -0.3, 0.8, -0.6);
+        p.pointLight(255, 255, 255, p.width * 0.6, -p.height * 0.5, 300);
+            tracker.display(currentStyle);
+            p.orbitControl();
+            // p.translate(200,0);
+            // tracker.display();
+    };
+
+    p.mousePressed = () => tracker.logTrackingInfo();
 
     const discoBallStyle = (poses, smoothedKeypoints, connections) => {
         for (let i = 0; i < poses.length; i++) {
@@ -156,32 +167,51 @@ const test1 = (p) => {
     }
 
     const collage2 = (poses, smoothedKeypoints, connections) => {
+        poses = poses[0];
+        const armRightUnder = p.createVector(poses.left_wrist.x - poses.left_elbow.x, poses.left_wrist.y - poses.left_elbow.y);
+        const armRightUpper = p.createVector(poses.left_elbow.x - poses.left_shoulder.x, poses.left_elbow.y - poses.left_shoulder.y);
+        const armLeftUnder = p.createVector(poses.right_wrist.x - poses.right_elbow.x, poses.right_wrist.y - poses.right_elbow.y);
+        const armLeftUpper = p.createVector(poses.right_elbow.x - poses.right_shoulder.x, poses.right_elbow.y - poses.right_shoulder.y);
+        
+        const tutuPos = p.createVector(poses.left_hip.x + poses.right_hip.x, poses.left_hip.y + poses.right_hip.y).mult(0.5);
+     
+        p.push();
+            p.translate(tutuPos.x, tutuPos.y + 50);
+            let angle = armLeftUpper.angleBetween(armRightUpper);
+            p.rotateZ(angle + p.HALF_PI);
+            let scaleFactor = armLeftUpper.mag() + armRightUpper.mag();
+            p.scale(scaleFactor / tutu.width * 1.5, scaleFactor / tutu.height * 1.5);
+            p.image(tutu, -tutu.width/2, -tutu.height/2);
+        p.pop();
+        
+   
+        // for (let i = 0; i < poses.length; i++) {
+        //     const pose = poses[i];
+        //     const smoothed = smoothedKeypoints[i];
+        //     for (let j = 0; j < connections.length; j++) {
+        //         const pointAIndex = connections[j][0];
+        //         const pointBIndex = connections[j][1];
+        //         const pointAData = pose.keypoints[pointAIndex];
+        //         const pointBData = pose.keypoints[pointBIndex];
+        //         const pointA = smoothed && smoothed[pointAIndex] ? smoothed[pointAIndex] : pointAData;
+        //         const pointB = smoothed && smoothed[pointBIndex] ? smoothed[pointBIndex] : pointBData;
 
-        for (let i = 0; i < poses.length; i++) {
-            const pose = poses[i];
-            const smoothed = smoothedKeypoints[i];
-            for (let j = 0; j < connections.length; j++) {
-                const pointAIndex = connections[j][0];
-                const pointBIndex = connections[j][1];
-                const pointAData = pose.keypoints[pointAIndex];
-                const pointBData = pose.keypoints[pointBIndex];
-                const pointA = smoothed && smoothed[pointAIndex] ? smoothed[pointAIndex] : pointAData;
-                const pointB = smoothed && smoothed[pointBIndex] ? smoothed[pointBIndex] : pointBData;
+        //         const vector = p.createVector(pointB.x - pointA.x, pointB.y - pointA.y);
 
-                const vector = p.createVector(pointB.x - pointA.x, pointB.y - pointA.y);
+        //         if (pointAData.confidence > 0.1 && pointBData.confidence > 0.1) {
+        //             p.push();
+        //                 p.translate(pointA.x, pointA.y);
+        //                 p.rotateZ(vector.heading());
+        //                 const distance = vector.mag();
+        //                 p.scale(distance / headTexture.width, distance / headTexture.height);
+        //                 p.texture(headTexture);
+        //                 p.image(headTexture, 0,0)
+        //             p.pop();
+        //         }
+        //     }
+        // }
 
-                if (pointAData.confidence > 0.1 && pointBData.confidence > 0.1) {
-                    p.push();
-                        p.translate(pointA.x, pointA.y);
-                        p.rotateZ(vector.heading());
-                        const distance = vector.mag();
-                        p.scale(distance / headTexture.width, distance / headTexture.height);
-                        p.texture(headTexture);
-                        p.image(headTexture, 0,0)
-                    p.pop();
-                }
-            }
-        }
+
 
         // for (let i = 0; i < poses.length; i++) {
         //     const pose = poses[i];
