@@ -18,9 +18,9 @@ class Ball {
         if (this.pos.x <= 0 || this.pos.x >= this.p.width - this.s) {
             this.vel.x *= -1;
         }
-        // if (this.pos.y <= 0 || this.pos.y >= this.p.height - this.s) {
-        //     this.vel.y *= -1;
-        // }
+        if (this.pos.y <= 0) {
+            this.vel.y *= -1;
+        }
     }
 
     detectBottom() {
