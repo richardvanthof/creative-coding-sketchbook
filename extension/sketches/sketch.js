@@ -15,7 +15,7 @@ const sketch = (p) => {
     
     p.setup = () => {
         p.createCanvas(600, 600);
-        enemies = new Enimies(p, 15, 15, 1);
+        enemies = new Enimies(p, 15, 15, 2);
         ball = new Ball(p, p.width/2, p.height/2, ballSize);
         player = new Player(p, p.width/2, playerSize.w, playerSize.h, moveSpeed);
         enemies.getTargets();
@@ -27,7 +27,10 @@ const sketch = (p) => {
         p.fill(255);
 
         if(state === 'playing') {
-            enemies.intersect(ball);
+            const done = enemies.intersect(ball);
+            if(done) {
+                state = 'success';
+            }
             enemies.update();
             enemies.display();
             

@@ -6,7 +6,7 @@ class Enemies {
         this.p = p;
         this.rows = rows;
         this.cols = cols;
-        this.enemiesRows = enemiesRows;
+        this.enemiesRows = enemiesRows - 1;
         this.enemiesCols = this.cols;
         this.size = p.width/this.cols;
         this.targets = [];
@@ -94,6 +94,10 @@ class Enemies {
 
                 this.enemies[target.row][target.col] = 0; // remove enemy
                 this.getTargets();
+                if(this.enemies.flat().every(value => value === 0)) {
+                    console.log('all cleared!')
+                    return true;
+                }
                 break;
             }
         }
