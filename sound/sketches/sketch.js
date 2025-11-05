@@ -12,6 +12,14 @@ const sketch = (p) => {
     let ballSize = 15;
     let lives;
     let state = 'start'; // 'start', 'success', 'playing', 'gameover'
+    let soundActive = true;
+    let successSound;
+    let successSoundPlayed = false;
+
+    p.preload = () => {
+        p.soundFormats('mp3');
+        successSound = p.loadSound('assets/sounds/windows');
+    }
     
     p.setup = () => {
         p.createCanvas(600, 600);
@@ -24,15 +32,23 @@ const sketch = (p) => {
     p.draw = () => {
         p.background(150);
         p.fill(255);
-
+        p.push();
+            p.fill(0)
+            p.textSize(12)
+            p.text(soundActive ? 'Sound: ON' : 'Sound: OFF', p.width - 80, p.height - 20);
+        p.pop();
         if(state === 'playing') {
+            setViewSounds(true)
             playView();
         } else if(state === 'gameover') {
+            setViewSounds(false)
             gameOverView();
         }
         else if(state === 'success') {
+            setViewSounds(false)
             successView();
         } else {
+            setViewSounds(false)
             startView();
         }
     };
@@ -42,8 +58,12 @@ const sketch = (p) => {
             restart();
         }
 
-        // Secret cheats
         if(p.key === 's') {
+            toggleSound();
+        }
+
+        // Secret cheats
+        if(p.key === 'd') {
             state = 'success';
         }
 
@@ -57,10 +77,28 @@ const sketch = (p) => {
         console.log(enemies.targets);
     }
 
+    const setViewSounds = (active) => {
+        ball.sound = active;
+        enemies.sound = active;
+        player.sound = active;
+    }
+
+    const toggleSound = () => {
+        soundActive = !soundActive;
+        ball.sound = soundActive;
+        enemies.sound = soundActive;
+        player.sound = soundActive;
+
+        if (!soundActive && successSound.isPlaying()) {
+            successSound.stop();
+            successSoundPlayed = false;
+        }
+    }
+
     const restart = () => {
         ball.reset();
         enemies.reset();
-        
+        successSoundPlayed = false;
         lives = ball.lives;
         state = 'playing';
     }
@@ -75,8 +113,16 @@ const sketch = (p) => {
     }
 
     const successView = () => {
+        
+                if (!successSoundPlayed && soundActive) {
+                        successSound.setVolume(0.1);
+                        successSound.play();
+                        successSoundPlayed = true;
+                }
         p.push();
-            p.textSize(50)
+            p.background('#8CBA80')
+            p.textSize(50);
+            p.fill('#514663')
             p.text('You won :)', 200, p.height / 2);
             p.textSize(20)
             p.text('Press SPACE to play again', 200, 450);
@@ -85,6 +131,7 @@ const sketch = (p) => {
 
     const startView = () => {
         p.push();
+            p.background('#658E9C')
             p.textSize(32);
             p.fill(0);
             p.text('Press SPACE to start', 150, p.height / 2);
@@ -92,9 +139,11 @@ const sketch = (p) => {
     }
 
     const playView = () => {
+        p.background('#514663');
         const done = enemies.intersect(ball);
         if(done) {
             state = 'success';
+            successSoundPlayed = false; // allow sound on next win
         }
         enemies.display();
         
@@ -106,7 +155,7 @@ const sketch = (p) => {
         lives = ball.detectBottom();
         ball.display();
 
-        p.fill(255,0,0)
+        (lives === 1) ? p.fill(255,0,0) : p.fill(255);
         p.text(`Lives: ${lives}`, 10, p.height - 20);
 
         if(lives <= 0) {

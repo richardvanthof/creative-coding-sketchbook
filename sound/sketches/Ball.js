@@ -6,6 +6,10 @@ class Ball {
         this.acc = p.createVector(0, 0);
         this.s = s;
         this.lives;
+    this.sound = true;
+    this.synth = null;
+    this.filter = null;
+    this.reverb = null;
     }
 
     reset(){
@@ -41,8 +45,9 @@ class Ball {
 
     display() {
         this.p.push();
-            this.p.fill(255);
+            this.p.fill('#CACF85');
             this.p.rect(this.pos.x, this.pos.y, this.s, this.s);
+           
         this.p.pop();
     }
 }

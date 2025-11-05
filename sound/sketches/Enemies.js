@@ -10,8 +10,8 @@ class Enemies {
         this.enemiesCols = this.cols;
         this.size = p.width/this.cols;
         this.targets = [];
-        
-        
+        this.sound = true;
+        this.synth = new p5.PolySynth();
         this.reset();
         this.elapsed = 0;
         this.pos = this.p.createVector(0,0);
@@ -94,6 +94,14 @@ class Enemies {
 
                 this.enemies[target.row][target.col] = 0; // remove enemy
                 this.getTargets();
+
+                // Play sound
+                if (this.sound && this.synth) {
+                    const midi = 48 + (target.col % 12) + target.row * 3;
+                    const freq = this.p.midiToFreq(midi);
+                    this.synth.play(freq, 0.4, 0, 0.25);
+                }
+
                 if(this.enemies.flat().every(value => value === 0)) {
                     console.log('all cleared!')
                     return true;
@@ -107,8 +115,9 @@ class Enemies {
         this.enemies.forEach((row, rowIndex) => {
             row.forEach((enemy, colIndex) => {
                 if(enemy !== 0) {
-                    this.p.fill(255, 255, 255, 255);
-                    this.p.stroke(10);
+                    this.p.fill('#658E9C');
+                    this.p.stroke('#4D5382');
+                    this.p.strokeWeight(2);
                     this.p.rect(colIndex * this.size, rowIndex * this.size, this.size, this.size);
                 }
             });

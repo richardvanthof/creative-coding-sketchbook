@@ -1,4 +1,4 @@
-# Assignment 4: Simulation
+# Sound
 This is the coding assignment by [Richard van 't Hof](https://www.therichard.space). This deliverable contains multiple experiments to illustrate the research process. Please only look at the first result for grading if you can't take multiple items into account. The other items may not always comply with the instructions. References for used inspiration or code examples can be found as comments in the source code.
 [> learn more](notes.md)
 
