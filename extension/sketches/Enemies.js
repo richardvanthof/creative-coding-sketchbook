@@ -113,6 +113,7 @@ class Enemies {
                 }
             });
         });
+        
         // Debug 
         //this.targets.forEach(target => {
         //     this.p.push();
@@ -120,14 +121,6 @@ class Enemies {
         //         this.p.rect(target.xStart, target.yStart, target.xEnd - target.xStart, target.yEnd - target.yStart);
         //     this.p.pop();
         // });
-    }
-
-    update() {
-        this.elapsed += this.p.deltaTime; // ms since previous frame
-        // if (this.elapsed >= 1000) {
-        //     this.moveEnemies();
-        //     this.elapsed -= 1000; // or reset to 0
-        // }
     }
 }
 
