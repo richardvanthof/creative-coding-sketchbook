@@ -8,6 +8,10 @@ Leiden University
 [toc]
 ## Usage instructions
 1. View `index.html` using a web server like you can find in the VS Code Live Preview plugin.
+
+### Shortcuts
+- `ctrl` + scroll = zoom
+- `space` + drag = pan
 ## Project goal
 I aim to develop a tool for generating both static and dynamic typographic graphics for use in graphic design, branding, and motion design projects. While such graphics can be produced using conventional design software such as Adobe Illustrator or After Effects, the process typically requires a significant amount of manual labour. This makes it time-consuming to create multiple variations with different text content or to experiment systematically with parameters and constraints within a specific visual concept. Moreover, these workflows are often unsuitable for interactive contexts, where typographic assets need to be generated dynamically in real time.
 
@@ -29,5 +33,6 @@ I aim to add the following features and functionalities to this tool:
 - Decide size of canvas.
 - export graphic to transparent png (and ideally even svg and mp4) at print quality (300dpi).
 - Pan canvas & zoom in and out
+- Program must be extensible to add new styles in the future.
 ## Reflection
 TBD

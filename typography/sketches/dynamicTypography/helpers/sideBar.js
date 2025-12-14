@@ -8,9 +8,9 @@ const PARAMS = {
     background: {r: 255, g: 255, b: 255},
 };
 
-
+export const sidePanel = new Pane();
 const addControls = (p, canvas, onCanvasChange = () => {}) => {
-    const sidePanel = new Pane();
+    
     const folder = sidePanel.addFolder({title: 'Page setup'}); 
 
     const updateCanvas = () => {

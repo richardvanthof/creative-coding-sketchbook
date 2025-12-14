@@ -62,6 +62,7 @@ class CanvasControls {
      * @param {number} deltaY 
      */
     handlePan(deltaX, deltaY) {
+     
         const panSpeed = 1 / this.zoom;
         const moveX = deltaX * panSpeed;
         const moveY = deltaY * panSpeed;
@@ -77,6 +78,14 @@ class CanvasControls {
     }
 
     update(p) {
+        // change cursor based on key pressed
+
+        if(p.keyIsDown(32)) { // Space key
+            p.cursor('grab');
+        } else {
+            p.cursor('default');
+        }
+
         if (this.handlersBound) {
             return;
         }

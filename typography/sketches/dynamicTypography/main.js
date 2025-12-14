@@ -1,6 +1,6 @@
-//import CanvasControls from "./helpers/canvasControls";
 import CanvasControls from "./helpers/canvasControls.js";
 import addSideBar, {PARAMS} from "./helpers/sideBar.js";
+import Rotate from "./styles/slicedText/slicedText.js";
 
 export let canvasControls;
 
@@ -13,6 +13,8 @@ const dynamicTypographyEditor = (p) => {
     let sideBar;
     let canvas;
     
+    // Store all text assets
+    let layers = [];
 
     p.setup = () => {
         // Create background canvas
@@ -20,12 +22,20 @@ const dynamicTypographyEditor = (p) => {
         
         // Create drawing canvas
         canvas = p.createGraphics(PARAMS.width, PARAMS.height);
+        canvas.rectMode(p.CENTER);
         // Editor controls
         canvasControls = new CanvasControls(p);
         sideBar = addSideBar(p, canvas, (updatedCanvas) => {
             canvas = updatedCanvas;
         });
+
+        layers.push(new Rotate(p, PARAMS.width, PARAMS.height));
         // controls = new CanvasControls(p);
+
+        for (let layer of layers) {
+      
+            layer.showControls();
+        }
     }
 
     p.draw = () => {
@@ -33,6 +43,12 @@ const dynamicTypographyEditor = (p) => {
 
         canvas.background(PARAMS.background.r, PARAMS.background.g, PARAMS.background.b);
         canvasControls.update(p);
+
+        for (let layer of layers) {
+            layer.display(canvas);
+
+        }
+
         // Draw the drawing canvas in the center
         p.image(canvas, -PARAMS.width / 2, -PARAMS.height / 2);
     };
