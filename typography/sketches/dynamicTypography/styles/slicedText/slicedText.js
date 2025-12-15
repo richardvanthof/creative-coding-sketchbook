@@ -26,6 +26,7 @@ class slicedText {
         this.offset = 0;
         this.delay = 0.2;
         this.textGraphic = p.createGraphics(this.canvas.width, this.canvas.height);
+        this.needsRedraw = true;
 
         this.masks = [];
 
@@ -53,6 +54,8 @@ class slicedText {
     }
 
     generateText() {
+        if (!this.needsRedraw) return;
+        this.textGraphic.clear();
         this.textGraphic.rectMode(this.p.CENTER);
         this.textGraphic.textAlign(this.p.CENTER, this.p.CENTER);
         this.textGraphic.textSize(this.fontSize);
@@ -65,14 +68,15 @@ class slicedText {
             this.pos.x + this.textGraphic.width / 2, 
             this.pos.y + this.textGraphic.height / 2
         );
+        this.needsRedraw = false;
     }
 
     display() {
-        //this.textGraphic.background('white');
+        const dirty = this.needsRedraw;
         this.generateText();
         this.masks.forEach((mask, idx) => {
             mask.a = idx * this.offset;
-            mask.display();
+            mask.display(dirty, this.pos.x, this.pos.y);
         });
 
     };
@@ -81,7 +85,7 @@ class slicedText {
         // Update the canvas reference and regenerate text graphic
         this.canvas = newCanvas;
         this.textGraphic = this.p.createGraphics(this.canvas.width, this.canvas.height);
-        this.generateText();
+        this.needsRedraw = true;
         this.generateRings(this.rings);
     }
 
@@ -146,23 +150,27 @@ class slicedText {
         folder.addBinding(this, 'text').on('change', (e) => {
             this.textGraphic.clear();
             this.text = e.value;
+            this.needsRedraw = true;
         });
         folder.addBinding(this, 'font');
         folder.addBinding(this, 'fontSize', {min: 10, step: 1}).on('change', () => {
             this.textGraphic.clear();
             this.fontSize = this.fontSize;
+            this.needsRedraw = true;
         });
         folder.addBinding(this, 'fillColor');
         folder.addBinding(this, 'strokeColor');
         folder.addBinding(this, 'strokeWeight', {min: 0, max: 20, step: 1}).on('change', () => {
             this.textGraphic.clear();
             this.strokeWeight = this.strokeWeight;
+            this.needsRedraw = true;
         });
         folder.addBinding(this, 'rings', {min: 1, max: 100, step: 1}).on('change', (e) => {
             this.rings = e.value;
             this.generateRings(this.rings);
+            this.needsRedraw = true;
         });
-        folder.addBinding(this, 'offset', {min: -Math.PI, max: Math.PI, step: 0.001});
+        folder.addBinding(this, 'offset', {min: -Math.PI/4, max: Math.PI/4, step: 0.01});
     }
 }
 
