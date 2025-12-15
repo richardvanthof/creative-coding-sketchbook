@@ -50,7 +50,7 @@ const addControls = (p, canvas, onCanvasChange = () => {}) => {
         PARAMS.PPI = ev.value.ppi;
         updateCanvas();
         canvasControls.setBaseZoom(PARAMS.width, PARAMS.height);
-        convasControls.setZoom(1);
+        canvasControls.setZoom(1);
         sidePanel.refresh();
     });
 

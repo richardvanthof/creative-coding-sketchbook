@@ -43,9 +43,9 @@ const dynamicTypographyEditor = (p) => {
         // controls = new CanvasControls(p);
 
         // show effect controls for text layers that are currently added.
-        // for (let layer of layers) {
-        //     layer.showControls();
-        // }
+        for (let layer of layers) {
+            layer.showControls();
+        }
     }
 
     p.draw = () => {

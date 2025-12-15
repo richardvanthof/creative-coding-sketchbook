@@ -52,8 +52,7 @@ class slicedText {
         this.masks = this.masks.reverse();
     }
 
-    display() {
-        //this.textGraphic.background('white');
+    generateText() {
         this.textGraphic.rectMode(this.p.CENTER);
         this.textGraphic.textAlign(this.p.CENTER, this.p.CENTER);
         this.textGraphic.textSize(this.fontSize);
@@ -66,7 +65,11 @@ class slicedText {
             this.pos.x + this.textGraphic.width / 2, 
             this.pos.y + this.textGraphic.height / 2
         );
-        
+    }
+
+    display() {
+        //this.textGraphic.background('white');
+        this.generateText();
         this.masks.forEach((mask, idx) => {
             mask.a = idx * this.offset;
             mask.display();
@@ -75,7 +78,10 @@ class slicedText {
     };
 
     updateCanvas(newCanvas) {
+        // Update the canvas reference and regenerate text graphic
         this.canvas = newCanvas;
+        this.textGraphic = this.p.createGraphics(this.canvas.width, this.canvas.height);
+        this.generateText();
         this.generateRings(this.rings);
     }
 
@@ -129,9 +135,9 @@ class slicedText {
 
         sidePanel.addFolder = (params) => {
             const folder = originalAddFolder(params);
-            if (params?.title === 'Sliced Text') {
-                injectSizeControls(folder);
-            }
+            // if (params?.title === 'Sliced Text') {
+            //     injectSizeControls(folder);
+            // }
             sidePanel.addFolder = originalAddFolder;
             return folder;
         };
@@ -156,7 +162,7 @@ class slicedText {
             this.rings = e.value;
             this.generateRings(this.rings);
         });
-        folder.addBinding(this, 'offset', {min: -Math.PI*2, max: Math.PI*2, step: 0.001});
+        folder.addBinding(this, 'offset', {min: -Math.PI, max: Math.PI, step: 0.001});
     }
 }
 
