@@ -34,5 +34,10 @@ I aim to add the following features and functionalities to this tool:
 - export graphic to transparent png (and ideally even svg and mp4) at print quality (300dpi).
 - Pan canvas & zoom in and out
 - Program must be extensible to add new styles in the future.
+
 ## Reflection
 TBD
+
+## Further improvements
+- More effects (should create an extensible 'TextEffect' class for this).
+- Improving performance 

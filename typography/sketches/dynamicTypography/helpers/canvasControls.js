@@ -1,5 +1,10 @@
 class CanvasControls {
-    constructor(p) {
+    /**
+     * @param {p5} p 
+     * @param {number} w Initial canvas width
+     * @param {number} h Initial canvas height
+     */
+    constructor(p, w = 400, h = 400) {
         this.p = p;
         this.zoom = 1;
         this.baseZoomDist = 500;
@@ -8,6 +13,7 @@ class CanvasControls {
         this.camera = this.p.createCamera();
         this.handlersBound = false;
         this.setCamera(this.camPos.x, this.camPos.y, this.camPos.z);
+        this.setBaseZoom(w, h);
     }
 
     /**

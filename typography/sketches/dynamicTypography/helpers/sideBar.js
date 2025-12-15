@@ -1,8 +1,9 @@
 import {Pane} from 'https://cdn.jsdelivr.net/npm/tweakpane@4.0.5/dist/tweakpane.min.js';
+import {canvasControls} from '../main.js';
 
 const PARAMS = {
-    width: 800,
-    height: 800,
+    width: 2408,
+    height: 3508,
     PPI: 72,
     scale: 1,
     background: {r: 255, g: 255, b: 255},
@@ -14,7 +15,17 @@ const addControls = (p, canvas, onCanvasChange = () => {}) => {
     const folder = sidePanel.addFolder({title: 'Page setup'}); 
 
     const updateCanvas = () => {
-        const nextCanvas = p.createGraphics(PARAMS.width, PARAMS.height);
+        let nextCanvas = canvas;
+
+        if (nextCanvas && typeof nextCanvas.resizeCanvas === 'function') {
+            nextCanvas.resizeCanvas(PARAMS.width, PARAMS.height);
+        } else if (p && typeof p.resizeCanvas === 'function') {
+            p.resizeCanvas(PARAMS.width, PARAMS.height);
+            nextCanvas = p.canvas ?? p._renderer ?? nextCanvas;
+        } else {
+            nextCanvas = p.createGraphics(PARAMS.width, PARAMS.height);
+        }
+
         onCanvasChange(nextCanvas);
     };
 
@@ -38,6 +49,8 @@ const addControls = (p, canvas, onCanvasChange = () => {}) => {
         PARAMS.height = ev.value.height;
         PARAMS.PPI = ev.value.ppi;
         updateCanvas();
+        canvasControls.setBaseZoom(PARAMS.width, PARAMS.height);
+        convasControls.setZoom(1);
         sidePanel.refresh();
     });
 
@@ -62,7 +75,7 @@ const addControls = (p, canvas, onCanvasChange = () => {}) => {
         updateCanvas();
     });
     folder.addBinding(PARAMS, 'PPI', {min: 72, max: 600, step: 1}).on('change', (ev) => {
-        PARAMS.dpi = ev.value;
+        PARAMS.PPI = ev.value;
     });
 
     // Set background color

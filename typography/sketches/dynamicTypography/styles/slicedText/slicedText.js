@@ -2,25 +2,34 @@ import Mask from './mask.js';
 import {Pane} from 'https://cdn.jsdelivr.net/npm/tweakpane@4.0.5/dist/tweakpane.min.js';
 import {sidePanel} from '../../helpers/sideBar.js';
 class slicedText {
-    constructor(p, width = 400, height = 400) {
+    /**
+     * 
+     * @param {p5 object} p 
+     * @param {p5 graphic} targetGraphic 
+     */
+    constructor(p, parentGraphic) {
         // General properties
         this.p = p;
-        this.pos = p.createVector(0, 0);
+        this.canvas = parentGraphic;
         this.text = 'Text';
-        this.width = width;
-        this.height = height;
+
+        // Canvas properties
+        this.pos = p.createVector(0, 0);
+
         // Style properties
         this.font = 'Arial';
         this.fontSize = 300;
         this.fillColor = {r: 0, g: 0, b: 0};
         this.strokeColor = {r: 255, g: 255, b: 255};
         this.strokeWeight = 0;
-        this.rings = 30;
+        this.rings = 5;
         this.offset = 0;
         this.delay = 0.2;
-        this.textGraphic = p.createGraphics(this.width, this.height);
+        this.textGraphic = p.createGraphics(this.canvas.width, this.canvas.height);
 
         this.masks = [];
+
+        
         this.generateRings(this.rings);
     }
 
@@ -31,19 +40,19 @@ class slicedText {
             this.masks.push(
                 new Mask(
                     this.p,
-                    this.width / 2,
-                    this.height / 2,
-                    (i + 1) * (this.height / this.rings),
-                    (i) * (this.height / this.rings),
+                    this.canvas,
+                    this.textGraphic,
+                    this.canvas.width / 2,
+                    this.canvas.height / 2,
+                    (i + 1) * (this.canvas.height / this.rings),
+                    (i) * (this.canvas.height / this.rings),
                 )
             );
         }
-        
-
-        //this.masks = this.masks.reverse();
+        this.masks = this.masks.reverse();
     }
 
-    display(parentCanvas) {
+    display() {
         //this.textGraphic.background('white');
         this.textGraphic.rectMode(this.p.CENTER);
         this.textGraphic.textAlign(this.p.CENTER, this.p.CENTER);
@@ -60,31 +69,80 @@ class slicedText {
         
         this.masks.forEach((mask, idx) => {
             mask.a = idx * this.offset;
-            mask.display(parentCanvas, this.textGraphic, this.pos.x, this.pos.y)
+            mask.display();
         });
 
-        // display the outer layer (what's left after masking)
-        // const textGraphic = this.textGraphic.get();
-        // const maskGraphic = this.p.createGraphics(this.width, this.height);
-        // maskGraphic.pixelDensity(1);
-
-        // maskGraphic.background(255);
-        // maskGraphic.noStroke();
-        // maskGraphic.fill(0);
-        // maskGraphic.ellipse(this.width / 2, this.height / 2, this.height, this.height);
-        // const m = maskGraphic.get();
-        // textGraphic.mask(m);
-        // parentCanvas.image(textGraphic, this.pos.x, this.pos.y);
     };
 
+    updateCanvas(newCanvas) {
+        this.canvas = newCanvas;
+        this.generateRings(this.rings);
+    }
+
     showControls() {
+        const updateTextGraphicSize = () => {
+            this.textGraphic = this.p.createGraphics(this.width, this.height);
+            if (typeof this.p.pixelDensity === 'function') {
+                this.textGraphic.pixelDensity(this.p.pixelDensity());
+            }
+            this.generateRings(this.rings);
+        };
+
+        const getCanvasWidth = () =>
+            typeof this.p?.width === 'number' && this.p.width > 0 ? this.p.width : this.width;
+
+        const getCanvasHeight = () =>
+            typeof this.p?.height === 'number' && this.p.height > 0 ? this.p.height : this.height;
+
+        const injectSizeControls = (folder) => {
+            const widthBinding = folder.addBinding(this, 'width', {
+                min: 10,
+                
+                step: 1,
+            });
+            widthBinding.on('change', (e) => {
+                this.width = e.value;
+                updateTextGraphicSize();
+            });
+
+            const heightBinding = folder.addBinding(this, 'height', {
+                min: 10,
+               
+                step: 1,
+            });
+            heightBinding.on('change', (e) => {
+                this.height = e.value;
+                updateTextGraphicSize();
+            });
+
+            const sizeButton = folder.addButton({title: 'Use Canvas Size'});
+            sizeButton.on('click', () => {
+                this.width = getCanvasWidth();
+                this.height = getCanvasHeight();
+                updateTextGraphicSize();
+                widthBinding.refresh();
+                heightBinding.refresh();
+            });
+        };
+
+        const originalAddFolder = sidePanel.addFolder.bind(sidePanel);
+
+        sidePanel.addFolder = (params) => {
+            const folder = originalAddFolder(params);
+            if (params?.title === 'Sliced Text') {
+                injectSizeControls(folder);
+            }
+            sidePanel.addFolder = originalAddFolder;
+            return folder;
+        };
+
         const folder = sidePanel.addFolder({title: 'Sliced Text'});
         folder.addBinding(this, 'text').on('change', (e) => {
             this.textGraphic.clear();
             this.text = e.value;
         });
         folder.addBinding(this, 'font');
-        folder.addBinding(this, 'fontSize', {min: 10, max: 1000, step: 1}).on('change', () => {
+        folder.addBinding(this, 'fontSize', {min: 10, step: 1}).on('change', () => {
             this.textGraphic.clear();
             this.fontSize = this.fontSize;
         });
@@ -98,7 +156,7 @@ class slicedText {
             this.rings = e.value;
             this.generateRings(this.rings);
         });
-        folder.addBinding(this, 'offset', {min: -Math.PI/20, max: Math.PI/20, step: 0.001});
+        folder.addBinding(this, 'offset', {min: -Math.PI*2, max: Math.PI*2, step: 0.001});
     }
 }
 
