@@ -81,7 +81,23 @@ const addControls = (p, canvas, onCanvasChange = () => {}) => {
     // Set background color
     folder.addBinding(PARAMS, 'background');
 
+    // Export to PNG
+    folder.addButton({
+        title: 'Export to PNG',
+    }).on('click', () => {
+        if (p && typeof p.saveCanvas === 'function') {
+            p.saveCanvas(canvas, 'sketch', 'png');
+        } else if (canvas && typeof canvas.toDataURL === 'function') {
+            const link = document.createElement('a');
+            link.download = 'sketch.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    });
+
     return sidePanel;
+
+    
 }
 
 export default addControls;

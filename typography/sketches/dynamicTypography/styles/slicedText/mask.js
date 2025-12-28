@@ -31,9 +31,9 @@ class Mask {
             this.maskBuffer.clear();
             this.maskBuffer.noStroke();
             this.maskBuffer.fill(155);
-            this.maskBuffer.ellipse(this.x, this.y, this.r * 2, this.r * 2);
+            this.maskBuffer.ellipse(this.x + offsetX, this.y + offsetY, this.r * 2, this.r * 2);
             this.maskBuffer.erase();
-            this.maskBuffer.ellipse(this.x, this.y, this.ri * 2 , this.ri * 2);
+            this.maskBuffer.ellipse(this.x + offsetX, this.y + offsetY, this.ri * 2 , this.ri * 2);
             this.maskBuffer.noErase();
 
             // use a p5.Image because mask() is only available there
@@ -41,9 +41,12 @@ class Mask {
             const maskImage = this.maskBuffer.get();
             this.maskedImage.mask(maskImage);
         }
+        this.maskBuffer.push();
+        this.maskBuffer.translate(offsetX, offsetY);
+        this.maskBuffer.pop();
 
         this.targetCanvas.push();
-            this.targetCanvas.translate(offsetX + this.x, offsetY + this.y);
+            this.targetCanvas.translate(this.x, this.y);
             this.targetCanvas.rotate(this.a);
             this.targetCanvas.imageMode(this.targetCanvas.CENTER);
             if (this.maskedImage) {

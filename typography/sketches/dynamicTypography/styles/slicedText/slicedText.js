@@ -1,5 +1,4 @@
 import Mask from './mask.js';
-import {Pane} from 'https://cdn.jsdelivr.net/npm/tweakpane@4.0.5/dist/tweakpane.min.js';
 import {sidePanel} from '../../helpers/sideBar.js';
 class slicedText {
     /**
@@ -27,7 +26,7 @@ class slicedText {
         this.delay = 0.2;
         this.textGraphic = p.createGraphics(this.canvas.width, this.canvas.height);
         this.needsRedraw = true;
-
+        this.center = {x: 0, y: 0};
         this.masks = [];
 
         
@@ -76,7 +75,7 @@ class slicedText {
         this.generateText();
         this.masks.forEach((mask, idx) => {
             mask.a = idx * this.offset;
-            mask.display(dirty, this.pos.x, this.pos.y);
+            mask.display(dirty, this.center.x, this.center.y);
         });
 
     };
@@ -158,8 +157,12 @@ class slicedText {
             this.fontSize = this.fontSize;
             this.needsRedraw = true;
         });
-        folder.addBinding(this, 'fillColor');
-        folder.addBinding(this, 'strokeColor');
+        folder.addBinding(this, 'fillColor').on('change', () => {
+            this.needsRedraw = true;
+        });
+        folder.addBinding(this, 'strokeColor').on('change', () => {
+            this.needsRedraw = true;
+        });
         folder.addBinding(this, 'strokeWeight', {min: 0, max: 20, step: 1}).on('change', () => {
             this.textGraphic.clear();
             this.strokeWeight = this.strokeWeight;
@@ -171,6 +174,7 @@ class slicedText {
             this.needsRedraw = true;
         });
         folder.addBinding(this, 'offset', {min: -Math.PI/4, max: Math.PI/4, step: 0.01});
+        //folder.addBinding(this, 'center', {step: 10});
     }
 }
 
