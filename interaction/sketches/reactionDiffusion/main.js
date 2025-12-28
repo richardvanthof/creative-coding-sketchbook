@@ -24,7 +24,7 @@ const reactionDiffusion = (p) => {
   let cells = [];
   let cellsNext = [];
   let c1, c2, res;
-  let paused = false;
+  // let paused = false; // Unused
 
   let diffusionA = 1, //diffusion rate A
     diffustionB = 0.5, // diffusion rate B
@@ -52,13 +52,11 @@ const reactionDiffusion = (p) => {
     res = p.width;
 
     // UI CONTROLS
-  const controls = p.createDiv().addClass('controls-wrapper').parent(wrapper);
+    const controls = p.createDiv().addClass("controls-wrapper").parent(wrapper);
     // Canvas Controls
-   
-    
-  
+
     // Brush Controls
-    const brushControls = p.createDiv().addClass('controls').parent(controls);
+    const brushControls = p.createDiv().addClass("controls").parent(controls);
     p.createP("Brush Size").parent(brushControls);
     brushSize = p.createSlider(0, 200, 20).parent(brushControls);
     brushSize.style("width", "200px");
@@ -92,7 +90,7 @@ const reactionDiffusion = (p) => {
     });
 
     // Canvas Colors
-    const canvasColors = p.createDiv().addClass('controls').parent(controls);
+    const canvasColors = p.createDiv().addClass("controls").parent(controls);
     p.createP("Colors").parent(canvasColors);
     c1 = p.createColorPicker("#fff").parent(canvasColors);
     c2 = p.createColorPicker("#000").parent(canvasColors);
@@ -100,9 +98,9 @@ const reactionDiffusion = (p) => {
     //console.log(c1.color())
 
     // Simulation Controls
-    const simControls = p.createDiv().addClass('controls').parent(controls);
+    const simControls = p.createDiv().addClass("controls").parent(controls);
 
-    p.createP(`Presets`).addClass('label').parent(simControls);
+    p.createP(`Presets`).addClass("label").parent(simControls);
     currentPreset = p.createSelect().parent(simControls);
     currentPreset.addClass("form-select"); // Bootstrap styling
     currentPreset.attribute("aria-label", "Preset select");
@@ -117,33 +115,34 @@ const reactionDiffusion = (p) => {
       currentPreset.option(pattern, [F, k]);
     });
 
-    p.createP(`Feed Rate`).addClass('label').parent(simControls);
+    p.createP(`Feed Rate`).addClass("label").parent(simControls);
     feedRate = p.createSlider(0.002, 0.12, 0.055, 0.0001).parent(simControls);
     feedRate.style("width", "200px");
 
-    p.createP(`Kill Rate`).addClass('label').parent(simControls);
+    p.createP(`Kill Rate`).addClass("label").parent(simControls);
     killRate = p.createSlider(0.03, 0.07, 0.062, 0.0001).parent(simControls);
     killRate.style("width", "200px");
 
-    const advancedSimControls = p.createElement("details").addClass('label').parent(simControls);
+    const advancedSimControls = p
+      .createElement("details")
+      .addClass("label")
+      .parent(simControls);
     p.createElement("summary", "Advanced").parent(advancedSimControls);
-    p.createP(`Diffusion A`).addClass('label').parent(advancedSimControls);
+    p.createP(`Diffusion A`).addClass("label").parent(advancedSimControls);
     diffusionA = p.createSlider(0, 2, 1, 0.01).parent(advancedSimControls);
     diffusionA.style("width", "200px");
 
-    p.createP(`Diffusion B`).addClass('label').parent(advancedSimControls);
+    p.createP(`Diffusion B`).addClass("label").parent(advancedSimControls);
     diffustionB = p.createSlider(0, 1, 0.5, 0.01).parent(advancedSimControls);
     diffustionB.style("width", "200px");
 
-    showFPS = p
-      .createCheckbox("FPS Counter", false)
-      .parent(advancedSimControls);
-    const helpDialog = p.createElement(
-      "dialog",
-      "Hold [ and ] to change brush size"
-    );
+    showFPS = p.createCheckbox("FPS Counter", false).parent(advancedSimControls);
+    // const helpDialog = p.createElement(
+    //   "dialog",
+    //   "Hold [ and ] to change brush size"
+    // );
 
-     const canvasControls = p.createDiv().addClass('controls').parent(controls);
+    const canvasControls = p.createDiv().addClass("controls").parent(controls);
     // p.createButton("Play/Pause")
     //   .addClass("btn btn-light")
     //   .parent(canvasControls)
@@ -160,7 +159,7 @@ const reactionDiffusion = (p) => {
     //   .addClass("btn btn btn-outline-primary")
     //   .parent(canvasControls)
     //   .mousePressed(() => helpDialog.showModal());
-    
+
     // Generate grid data structure
     // with the initial particle properties.
     resetCanvas();
@@ -192,22 +191,26 @@ const reactionDiffusion = (p) => {
           a: calculateLaPlace({ ...config, chemical: "a" }),
           b: calculateLaPlace({ ...config, chemical: "b" }),
         };
-        cellsNext[x][y].a =
-          a + dA * laPlace.a - a * b * b + feed * (1 - a) * dt;
-        cellsNext[x][y].b =
-          b + (dB * laPlace.b + a * b * b - (kill + feed) * b) * dt;
+
+        let nextA = a + dA * laPlace.a - a * b * b + feed * (1 - a) * dt;
+        let nextB = b + (dB * laPlace.b + a * b * b - (kill + feed) * b) * dt;
+
+        cellsNext[x][y].a = p.constrain(nextA, 0, 1);
+        cellsNext[x][y].b = p.constrain(nextB, 0, 1);
       });
     });
 
     // Define gradient endpoints once outside the loop
-    const [r1, g1, b1, a1] = c1.color().levels;
-    const [r2, g2, b2, a2] = c2.color().levels;
+    const [r1, g1, b1] = c1.color().levels;
+    const [r2, g2, b2] = c2.color().levels;
 
     for (let x = 0; x < p.width; x++) {
       for (let y = 0; y < p.height; y++) {
-        let t = cellsNext[x][y].b; // 
+        let val = cellsNext[x][y].b;
+        // Multiply by 2.5 to increase contrast/intensity of the chemical visualization
+        let t = p.constrain(val * 2.5, 0, 1);
 
-        // Manual RGB interpolation 
+        // Manual RGB interpolation
         let r = r1 + (r2 - r1) * t;
         let g = g1 + (g2 - g1) * t;
         let b = b1 + (b2 - b1) * t;
@@ -239,10 +242,6 @@ const reactionDiffusion = (p) => {
     }
   };
 
-
-
-
-  
   // Paint controls
   p.mousePressed = (e) => paint();
   p.mouseDragged = (e) => paint(); // BUG: sometimes this results in green squares taking over the canvas
