@@ -1,17 +1,29 @@
 let gradients = (p) => {
-  let rows;
+  let rows = 50;
   let angle;
-
+  let lastMillis = 0;
+  let motionReversed = false;
+  const speed = 10;
   p.setup = () => {
-    p.createCanvas(400, 400);
+    p.createCanvas(p.windowWidth -10, p.windowHeight-10);
     p.colorMode(p.HSL);
     p.angleMode(p.DEGREES);
-    rows = p.createSlider(1, 50);
     angle = 0;
   };
 
   p.draw = () => {
     p.background(255); // Optional: clear canvas each frame
+
+    const time = p.millis();
+
+    if (time - lastMillis > 10) {
+      if(rows >= 100 || rows <= 10) {
+        motionReversed = !motionReversed;
+      }
+      rows += motionReversed ? -speed : speed;
+
+      lastMillis = time;
+    }
 
     let c1 = p.color(10, 82, 54);
     let c2 = p.color(335, 67, 77);
@@ -33,9 +45,9 @@ let gradients = (p) => {
       p.pop(); // Restore transformation state
     };
 
-    let rowHeight = p.height / rows.value();
+    let rowHeight = p.height / rows;
 
-    for (let row = 0; row < rows.value(); row++) {
+    for (let row = 0; row < rows; row++) {
       let colAmount = row * 2 || 1; // avoid 0 cols
       let colWidth = p.width / colAmount;
 
@@ -50,6 +62,10 @@ let gradients = (p) => {
         );
       }
     }
+  };
+
+  p.windowResized = () => {
+    p.resizeCanvas(p.windowWidth -5, p.windowHeight -5);
   };
 };
 

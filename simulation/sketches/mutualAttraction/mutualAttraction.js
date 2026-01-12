@@ -5,7 +5,7 @@ const mutualAttraction = (p) => {
   let sun;
 
   p.setup = () => {
-    p.createCanvas(600, 600, p.WEBGL);
+    p.createCanvas(window.innerWidth, window.innerHeight, p.WEBGL);
 
     const config = [
       [100, 100, 0, 5, 5],

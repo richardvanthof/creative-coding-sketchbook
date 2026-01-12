@@ -4,7 +4,7 @@ const colors = ['#0D3B66', '#FAF0CA', '#F4D35E', '#EE964B', '#F95738'];
 const bg = '#020423';
 const trunchet = (p) => {
     let tiles = [];
-
+    let counter = 0;
     class Tile {
         constructor(x, y, size) {
             this.x = x;
@@ -74,25 +74,39 @@ const trunchet = (p) => {
         }
     }
 
-    p.setup = function () {
-        p.createCanvas(400, 400);
-        const amount = 5; // Amount of tiles
-        const size = p.width / amount;
+    const setTiles = () => {
+        tiles = [];
+        const size = 110;
         for (let x = size / 2; x < p.width; x += size) {
             for (let y = size / 2; y < p.height; y += size) {
                 tiles.push(new Tile(x, y, size));
             }
         }
+    }
+
+    p.setup = function () {
+        p.createCanvas(p.windowWidth -10, p.windowHeight -10);
+        setTiles();
         // p.noLoop();
     };
 
     p.draw = function () {
         p.background(bg);
+        counter++;
+        if(counter > 1000) {
+            counter = 0;
+            setTiles();
+        }
         tiles.forEach((tile) => {
             tile.detectCursor(p.mouseX, p.mouseY);
             tile.show();
         });
        
+    };
+
+    p.windowResized = () => {
+        setTiles();
+        p.resizeCanvas(p.windowWidth -10, p.windowHeight -10);
     };
 };
 

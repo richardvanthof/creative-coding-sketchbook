@@ -9,7 +9,7 @@ const mutualAttraction = (p) => {
       p.createCanvas(600, 600);
       // p.camera(0, 0, 800, 0, 0, 0, 0, 1, 0);
       reset();
-      p.background('#364156');
+      p.background('#1B1B3A');
       p.createP('Enhanced version by <a target="_blanc" href="https://www.robsaunders.net/">Rob Saunders (Associate Professor LIACS)</a>')
     }
 
@@ -39,7 +39,7 @@ const mutualAttraction = (p) => {
       if (elapsedMillis < 1000) {
         p.push();
         p.noStroke();
-        p.fill(50, p.map(elapsedMillis, 0, 1000, 2, 20));
+        p.fill(27,27,58, p.map(elapsedMillis, 0, 1000, 0, 255));
         p.rect(0, 0, p.width, p.height);
         p.pop();
         p.filter(p.BLUR, p.map(elapsedMillis, 0, 1000, 1, 4));
