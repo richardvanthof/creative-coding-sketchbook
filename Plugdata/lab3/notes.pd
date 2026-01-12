@@ -1,0 +1,16 @@
+#N canvas 827 239 734 565 12;
+#X obj 214 103 pack f f f f;
+#X text 321 105 make array;
+#X msg 327 322 hello \$1;
+#X floatatom 304 236 5 0 0 0 - - - 0;
+#X obj 252 406 print;
+#X obj 203 232 bng 25 250 50 0 empty empty empty 17 7 0 10 #e4e4e4 #4d4d4d #373737;
+#X obj 620 199 line;
+#X obj 686 408 adc~;
+#X obj 482 385;
+#X text 737 408 Audio input \, alles wat met signall te maken heeft heeft een tilde nodig;
+#X obj 731 488 tabwrite;
+#X text 724 85 als je een functie kan maken kan je een aparte patch maken \; je kan parameters instellen met de input blokken \; in je een functie uit een andere patch wil gebruiken moet je ze allebei tegelijk openen en dan gewoon de naam van de file gebruiken in de nieuwe patch.;
+#X connect 2 0 4 0;
+#X connect 3 0 2 0;
+#X connect 5 0 3 0;
